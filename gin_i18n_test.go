@@ -6,7 +6,7 @@ import (
 )
 
 func init() {
-	NewI18nImpl("example/localize")
+	NewI18nImpl("./example/localize")
 }
 
 func Test_testI18n(t *testing.T) {
