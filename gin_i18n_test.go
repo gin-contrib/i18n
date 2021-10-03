@@ -1,7 +1,7 @@
 package i18n
 
 import (
-	"gin-i18n/pkg/logger"
+	"log"
 	"testing"
 )
 
@@ -10,13 +10,12 @@ func init() {
 }
 
 func Test_testI18n(t *testing.T) {
-	logger.AtLog.Info("tada")
-	message := AutoI18n.GetMessage("welcome")
-	logger.AtLog.Info("Message: ", message)
+	message, _ := GinI18n.GetMessage("welcome")
+	log.Println("Message: ", message)
 
-	message = AutoI18n.GetMessage( "welcome")
-	logger.AtLog.Info("Message: ", message)
+	message, _ = GinI18n.GetMessage( "welcome")
+	log.Println("Message: ", message)
 
-	message = AutoI18n.GetMessage("welcome")
-	logger.AtLog.Info("Message: ", message)
+	message, _ = GinI18n.GetMessage("welcome")
+	log.Println("Message: ", message)
 }

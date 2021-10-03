@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
-	"gin-i18n/pkg/logger"
 	"golang.org/x/text/language"
 )
 
 type I18n interface {
-	GetMessage(key string) string
+	GetMessage(key string) (string, error)
+	MustGetMessage(key string) string
 	SetCurrentGinContext(ctx *gin.Context)
 }
 
@@ -34,17 +34,16 @@ func NewI18nImpl(rootPath string) {
 	ins.loadMessageFiles()
 	ins.setLocalizerByLng()
 
-	AutoI18n = ins
+	GinI18n = ins
 }
 
-var AutoI18n I18n
+var GinI18n I18n
 
 // loadMessageFiles load all file localize to bundle
 func (i *i18nImpl) loadMessageFiles() {
 	for lng, _ := range i.acceptLanguage {
-		if _, err := i.bundle.LoadMessageFile(i.getMessageFilePath(lng.String())); err != nil {
-			panic(err)
-		}
+		path := i.getMessageFilePath(lng.String())
+		i.bundle.MustLoadMessageFile(path)
 	}
 }
 
@@ -97,7 +96,7 @@ func (i *i18nImpl) getLocalizerByLng(lng string) *i18n.Localizer {
 }
 
 // GetMessage get localize message by lng and messageID
-func (i *i18nImpl) GetMessage(messageID string) string {
+func (i *i18nImpl) GetMessage(messageID string) (string, error) {
 	lng := GetLngFromGinContext(i.currentContext)
 	localizer := i.getLocalizerByLng(lng)
 	localizeConfig := &i18n.LocalizeConfig{
@@ -106,9 +105,15 @@ func (i *i18nImpl) GetMessage(messageID string) string {
 
 	message, err := localizer.Localize(localizeConfig)
 	if err != nil {
-		logger.AtLog.Error(err)
+		return "", err
 	}
 
+	return message, nil
+}
+
+// MustGetMessage
+func (i *i18nImpl) MustGetMessage(messageID string) string {
+	message, _ := i.GetMessage(messageID)
 	return message
 }
 

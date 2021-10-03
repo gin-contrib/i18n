@@ -1,7 +1,5 @@
 package i18n
 
-import "github.com/gin-gonic/gin"
-
 type (
 	KeyMessage struct {
 		_              struct{}
@@ -12,10 +10,10 @@ type (
 	MapIntKeyMessage    map[int]KeyMessage
 )
 
-func (k *KeyMessage) GetMessageFromGinContext(context *gin.Context) string {
+func (k *KeyMessage) GetMessage() string {
 	if k.I18nKey == "" {
 		return k.DefaultMessage
 	}
 
-	return AutoI18n.GetMessage(k.I18nKey)
+	return GinI18n.MustGetMessage(k.I18nKey)
 }

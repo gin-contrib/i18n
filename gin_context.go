@@ -30,6 +30,6 @@ func GetLngFromGinContext(context *gin.Context) string {
 
 func Localize() gin.HandlerFunc {
 	return func(context *gin.Context) {
-		AutoI18n.SetCurrentGinContext(context)
+		GinI18n.SetCurrentGinContext(context)
 	}
 }
