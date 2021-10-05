@@ -1,17 +1,12 @@
 package i18n
 
 import (
+	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"golang.org/x/text/language"
 )
-
-type I18n interface {
-	GetMessage(key string) (string, error)
-	MustGetMessage(key string) string
-	SetCurrentGinContext(ctx *gin.Context)
-}
 
 type i18nImpl struct {
 	rootPath        string
@@ -22,7 +17,7 @@ type i18nImpl struct {
 	currentContext *gin.Context
 }
 
-func NewI18nImpl(rootPath string) {
+func NewI18n(rootPath string) {
 	bundle := i18n.NewBundle(defaultLanguage)
 	bundle.RegisterUnmarshalFunc(defaultFormatFile, defaultUnmarshalFunc)
 	ins := &i18nImpl{
@@ -96,11 +91,13 @@ func (i *i18nImpl) getLocalizerByLng(lng string) *i18n.Localizer {
 }
 
 // GetMessage get localize message by lng and messageID
-func (i *i18nImpl) GetMessage(messageID string) (string, error) {
+func (i *i18nImpl) GetMessage(param interface{}) (string, error) {
 	lng := GetLngFromGinContext(i.currentContext)
 	localizer := i.getLocalizerByLng(lng)
-	localizeConfig := &i18n.LocalizeConfig{
-		MessageID: messageID,
+
+	localizeConfig, err := i.getLocalizeConfig(param)
+	if err != nil {
+		return "", err
 	}
 
 	message, err := localizer.Localize(localizeConfig)
@@ -111,13 +108,28 @@ func (i *i18nImpl) GetMessage(messageID string) (string, error) {
 	return message, nil
 }
 
-// MustGetMessage
-func (i *i18nImpl) MustGetMessage(messageID string) string {
-	message, _ := i.GetMessage(messageID)
+func (i *i18nImpl) getLocalizeConfig(param interface{}) (*i18n.LocalizeConfig, error) {
+	switch paramValue := param.(type) {
+	case string:
+		localizeConfig := &i18n.LocalizeConfig{
+			MessageID: paramValue,
+		}
+		return localizeConfig, nil
+	case *LocalizeConfig:
+		result := i18n.LocalizeConfig(*paramValue)
+		return &result, nil
+	}
+
+	msg := fmt.Sprintf("un supported localize param: %v", param)
+	return nil, errors.New(msg)
+}
+
+// MustGetMessage ...
+func (i *i18nImpl) MustGetMessage(param interface{}) string {
+	message, _ := i.GetMessage(param)
 	return message
 }
 
 func (i *i18nImpl) SetCurrentGinContext(ctx *gin.Context) {
 	i.currentContext = ctx
 }
-

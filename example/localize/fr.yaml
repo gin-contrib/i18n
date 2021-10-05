@@ -1,1 +1,2 @@
 welcome: hello
+welcomeWithName: hello {{ .name }}

@@ -6,14 +6,19 @@ import (
 )
 
 func init() {
-	NewI18nImpl("./example/localize")
+	NewI18n("./example/localize")
 }
 
 func Test_testI18n(t *testing.T) {
 	message, _ := GinI18n.GetMessage("welcome")
 	log.Println("Message: ", message)
 
-	message, _ = GinI18n.GetMessage( "welcome")
+	message, _ = GinI18n.GetMessage(&LocalizeConfig{
+		MessageID: "welcomeWithName",
+		TemplateData: map[string]string{
+			"name": "aksJH",
+		},
+	})
 	log.Println("Message: ", message)
 
 	message, _ = GinI18n.GetMessage("welcome")
