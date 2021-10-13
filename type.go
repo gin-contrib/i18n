@@ -8,15 +8,11 @@ type (
 		I18nKey        string
 		DefaultMessage string
 	}
+
 	MapStringKeyMessage map[string]KeyMessage
 	MapIntKeyMessage    map[int]KeyMessage
+
 	LocalizeConfig      i18n.LocalizeConfig
+
+	GinI18nOption func(n I18n)
 )
-
-func (k *KeyMessage) GetMessage() string {
-	if k.I18nKey == "" {
-		return k.DefaultMessage
-	}
-
-	return GinI18n.MustGetMessage(k.I18nKey)
-}

@@ -5,8 +5,8 @@ import (
 	"strings"
 )
 
-func GetLngFromGinContext(context *gin.Context) string {
-	defaultLng := defaultLanguage.String()
+func getLngFromGinContext(context *gin.Context) string {
+	defaultLng := DefaultLanguage.String()
 	if context == nil || context.Request == nil {
 		return defaultLng
 	}
@@ -30,6 +30,6 @@ func GetLngFromGinContext(context *gin.Context) string {
 
 func Localize() gin.HandlerFunc {
 	return func(context *gin.Context) {
-		GinI18n.SetCurrentGinContext(context)
+		GinI18n.setCurrentContext(context)
 	}
 }

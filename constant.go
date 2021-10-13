@@ -6,16 +6,16 @@ import (
 )
 
 const (
-	defaultFormatFile = "yaml"
+	DefaultFormatBundleFile = "yaml"
 )
 
 var (
-	defaultLanguage      = language.English
-	defaultUnmarshalFunc = yaml.Unmarshal
+	DefaultLanguage      = language.English
+	DefaultUnmarshalFunc = yaml.Unmarshal
 
-	acceptLanguage = map[language.Tag]bool{
-		defaultLanguage: true,
-		language.German: true,
-		language.French: true,
+	DefaultAcceptLanguage = []language.Tag{
+		DefaultLanguage,
+		language.German,
+		language.French,
 	}
 )

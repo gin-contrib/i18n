@@ -1,6 +1,7 @@
 package i18n
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -8,26 +9,34 @@ import (
 	"golang.org/x/text/language"
 )
 
-type i18nImpl struct {
-	rootPath        string
-	bundle          *i18n.Bundle
-	localizerByLng  map[string]*i18n.Localizer
-	acceptLanguage  map[language.Tag]bool
-	defaultLanguage language.Tag
-	currentContext *gin.Context
+var (
+	_ I18n = (*ginI18n)(nil)
+)
+
+type ginI18n struct {
+	bundle           *i18n.Bundle
+	currentContext   *gin.Context
+	localizerByLng   map[string]*i18n.Localizer
+	defaultLanguage  language.Tag
 }
 
-func NewI18n(rootPath string) {
-	bundle := i18n.NewBundle(defaultLanguage)
-	bundle.RegisterUnmarshalFunc(defaultFormatFile, defaultUnmarshalFunc)
-	ins := &i18nImpl{
-		bundle:          bundle,
-		rootPath:        rootPath,
-		acceptLanguage:  acceptLanguage,
-		defaultLanguage: defaultLanguage,
+type Config struct {
+	DefaultLanguage  language.Tag
+	FormatBundleFile string
+	AcceptLanguage   []language.Tag
+	RootPath         string
+	UnmarshalFunc    i18n.UnmarshalFunc
+}
+
+func NewI18n(config *Config) {
+	bundle := i18n.NewBundle(config.DefaultLanguage)
+	bundle.RegisterUnmarshalFunc(config.FormatBundleFile, config.UnmarshalFunc)
+	ins := &ginI18n{
+		bundle:           bundle,
+		defaultLanguage:  config.DefaultLanguage,
 	}
-	ins.loadMessageFiles()
-	ins.setLocalizerByLng()
+	ins.loadMessageFiles(config)
+	ins.setLocalizerByLng(config.AcceptLanguage)
 
 	GinI18n = ins
 }
@@ -35,17 +44,17 @@ func NewI18n(rootPath string) {
 var GinI18n I18n
 
 // loadMessageFiles load all file localize to bundle
-func (i *i18nImpl) loadMessageFiles() {
-	for lng, _ := range i.acceptLanguage {
-		path := i.getMessageFilePath(lng.String())
+func (i *ginI18n) loadMessageFiles(config *Config) {
+	for _, lng := range config.AcceptLanguage {
+		path := fmt.Sprintf("%s/%s.%s", config.RootPath, lng.String(), config.FormatBundleFile)
 		i.bundle.MustLoadMessageFile(path)
 	}
 }
 
 // setLocalizerByLng set localizer by language
-func (i *i18nImpl) setLocalizerByLng() {
+func (i *ginI18n) setLocalizerByLng(acceptLanguage []language.Tag) {
 	i.localizerByLng = map[string]*i18n.Localizer{}
-	for lng, _ := range i.acceptLanguage {
+	for _, lng := range acceptLanguage {
 		lngStr := lng.String()
 		i.localizerByLng[lngStr] = i.newLocalizer(lngStr)
 	}
@@ -58,7 +67,7 @@ func (i *i18nImpl) setLocalizerByLng() {
 }
 
 // newLocalizer create a localizer by language
-func (i *i18nImpl) newLocalizer(lng string) *i18n.Localizer {
+func (i *ginI18n) newLocalizer(lng string) *i18n.Localizer {
 	lngDefault := i.defaultLanguage.String()
 	lngs := []string{
 		lng,
@@ -75,13 +84,8 @@ func (i *i18nImpl) newLocalizer(lng string) *i18n.Localizer {
 	return localizer
 }
 
-// getMessageFilePath get message file path by language
-func (i *i18nImpl) getMessageFilePath(lng string) string {
-	return fmt.Sprintf("%s/%s.%s", i.rootPath, lng, defaultFormatFile)
-}
-
 // getLocalizerByLng get localizer by language
-func (i *i18nImpl) getLocalizerByLng(lng string) *i18n.Localizer {
+func (i *ginI18n) getLocalizerByLng(lng string) *i18n.Localizer {
 	localizer, hasValue := i.localizerByLng[lng]
 	if hasValue {
 		return localizer
@@ -91,8 +95,8 @@ func (i *i18nImpl) getLocalizerByLng(lng string) *i18n.Localizer {
 }
 
 // GetMessage get localize message by lng and messageID
-func (i *i18nImpl) GetMessage(param interface{}) (string, error) {
-	lng := GetLngFromGinContext(i.currentContext)
+func (i *ginI18n) GetMessage(param interface{}) (string, error) {
+	lng := getLngFromGinContext(i.currentContext)
 	localizer := i.getLocalizerByLng(lng)
 
 	localizeConfig, err := i.getLocalizeConfig(param)
@@ -108,7 +112,7 @@ func (i *i18nImpl) GetMessage(param interface{}) (string, error) {
 	return message, nil
 }
 
-func (i *i18nImpl) getLocalizeConfig(param interface{}) (*i18n.LocalizeConfig, error) {
+func (i *ginI18n) getLocalizeConfig(param interface{}) (*i18n.LocalizeConfig, error) {
 	switch paramValue := param.(type) {
 	case string:
 		localizeConfig := &i18n.LocalizeConfig{
@@ -125,11 +129,11 @@ func (i *i18nImpl) getLocalizeConfig(param interface{}) (*i18n.LocalizeConfig, e
 }
 
 // MustGetMessage ...
-func (i *i18nImpl) MustGetMessage(param interface{}) string {
+func (i *ginI18n) MustGetMessage(param interface{}) string {
 	message, _ := i.GetMessage(param)
 	return message
 }
 
-func (i *i18nImpl) SetCurrentGinContext(ctx *gin.Context) {
-	i.currentContext = ctx
+func (i *ginI18n) setCurrentContext(ctx context.Context) {
+	i.currentContext = ctx.(*gin.Context)
 }

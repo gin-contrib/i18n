@@ -1,9 +1,12 @@
 package i18n
 
-import "github.com/gin-gonic/gin"
+import (
+	"context"
+)
 
 type I18n interface {
 	GetMessage(param interface{}) (string, error)
 	MustGetMessage(param interface{}) string
-	SetCurrentGinContext(ctx *gin.Context)
+
+	setCurrentContext(ctx context.Context)
 }

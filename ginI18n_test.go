@@ -6,7 +6,13 @@ import (
 )
 
 func init() {
-	NewI18n("./example/localize")
+	NewI18n(&Config{
+		RootPath: "./example/localize",
+		AcceptLanguage: DefaultAcceptLanguage,
+		FormatBundleFile: DefaultFormatBundleFile,
+		DefaultLanguage: DefaultLanguage,
+		UnmarshalFunc: DefaultUnmarshalFunc,
+	})
 }
 
 func Test_testI18n(t *testing.T) {
