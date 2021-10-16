@@ -1,7 +1,7 @@
 # i18n
 [![Run Tests](https://github.com/bos-hieu/i18n/actions/workflows/go.yml/badge.svg)](https://github.com/bos-hieu/i18n/actions/workflows/go.yml)
 [![CodeQL](https://github.com/bos-hieu/i18n/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/bos-hieu/i18n/actions/workflows/codeql-analysis.yml)
-
+[![codecov](https://codecov.io/gh/bos-hieu/i18n/branch/master/graph/badge.svg?token=QNMN3KM28Y)](https://codecov.io/gh/bos-hieu/i18n)
 
 ## Usage
 
