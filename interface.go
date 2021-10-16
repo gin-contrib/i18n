@@ -4,6 +4,7 @@ import (
 	"context"
 )
 
+// GinI18n ...
 type GinI18n interface {
 	getMessage(param interface{}) (string, error)
 	mustGetMessage(param interface{}) string
