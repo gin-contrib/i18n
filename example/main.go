@@ -1,7 +1,7 @@
 package main
 
 import (
-	gini18n "gin-i18n"
+	gini18n "github.com/bos-hieu/gin-i18n"
 	"github.com/gin-gonic/gin"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"log"

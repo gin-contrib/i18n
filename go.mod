@@ -1,4 +1,4 @@
-module gin-i18n
+module github.com/bos-hieu/gin-i18n
 
 go 1.16
 

@@ -10,7 +10,7 @@ Canonical example:
 package main
 
 import (
-	gini18n "gin-i18n"
+	gini18n "github.com/bos-hieu/gin-i18n"
 	"github.com/gin-gonic/gin"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"log"
@@ -50,7 +50,7 @@ package main
 
 import (
 	"encoding/json"
-	gini18n "gin-i18n"
+	gini18n "github.com/bos-hieu/gin-i18n"
 	"github.com/gin-gonic/gin"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"golang.org/x/text/language"
@@ -96,7 +96,7 @@ Customized Get Language Handler
 package main
 
 import (
-	gini18n "gin-i18n"
+	gini18n "github.com/bos-hieu/gin-i18n"
 	"github.com/gin-gonic/gin"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"log"
