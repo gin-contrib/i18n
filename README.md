@@ -1,11 +1,27 @@
 # i18n
-[![Run Tests](https://github.com/bos-hieu/i18n/actions/workflows/go.yml/badge.svg)](https://github.com/bos-hieu/i18n/actions/workflows/go.yml)
-[![CodeQL](https://github.com/bos-hieu/i18n/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/bos-hieu/i18n/actions/workflows/codeql-analysis.yml)
+
+[![Run Tests](https://github.com/bos-hieu/gin-i18n/actions/workflows/go.yml/badge.svg)](https://github.com/bos-hieu/gin-i18n/actions/workflows/go.yml)
+[![CodeQL](https://github.com/bos-hieu/gin-i18n/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/bos-hieu/gin-i18n/actions/workflows/codeql-analysis.yml)
 [![codecov](https://codecov.io/gh/bos-hieu/i18n/branch/master/graph/badge.svg?token=QNMN3KM28Y)](https://codecov.io/gh/bos-hieu/i18n)
+[![GoDoc](https://godoc.org/github.com/bos-hieu/gin-i18n?status.svg)](https://godoc.org/github.com/bos-hieu/gin-i18n)
+[![Go Report Card](https://goreportcard.com/badge/github.com/bos-hieu/gin-i18n)](https://goreportcard.com/report/github.com/bos-hieu/gin-i18n)
 
 ## Usage
 
+Download and install it:
+
+```sh
+go get  go get github.com/bos-hieu/gin-i18n
+```
+
+Import it in your code:
+
+```go
+import gini18n "github.com/bos-hieu/gin-i18n"
+```
+
 Canonical example:
+
 ```go
 package main
 
@@ -140,3 +156,7 @@ func main() {
 }
 
 ```
+
+## License
+
+This project is under MIT License. See the [LICENSE](LICENSE) file for the full license text.

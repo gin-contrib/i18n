@@ -2,6 +2,7 @@ package gini18n
 
 import "github.com/gin-gonic/gin"
 
+// defaultGetLngHandler ...
 func defaultGetLngHandler(context *gin.Context, defaultLng string) string {
 	if context == nil || context.Request == nil {
 		return defaultLng

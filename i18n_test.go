@@ -13,6 +13,7 @@ func init() {
 	gin.SetMode(gin.ReleaseMode)
 }
 
+// newServer ...
 func newServer() *gin.Engine {
 	router := gin.New()
 	router.Use(Localize())
@@ -33,6 +34,7 @@ func newServer() *gin.Engine {
 	return router
 }
 
+// makeRequest ...
 func makeRequest(
 	lng language.Tag,
 	name string,

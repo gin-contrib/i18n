@@ -6,6 +6,7 @@ import (
 
 var atI18n GinI18n
 
+// newI18n ...
 func newI18n(opts ...Option) {
 	// init default value
 	ins := &ginI18nImpl{
@@ -21,6 +22,7 @@ func newI18n(opts ...Option) {
 	atI18n = ins
 }
 
+// Localize ...
 func Localize(opts ...Option) gin.HandlerFunc {
 	newI18n(opts...)
 	return func(context *gin.Context) {
