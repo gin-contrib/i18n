@@ -22,7 +22,7 @@ func WithBundle(config *BundleCfg) Option {
 }
 
 // WithGetLngHandle ...
-func WithGetLngHandle(handler GetLngHandler) Option{
+func WithGetLngHandle(handler GetLngHandler) Option {
 	return func(g GinI18n) {
 		g.setGetLngHandler(handler)
 	}

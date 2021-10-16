@@ -20,4 +20,3 @@ func defaultGetLngHandler(context *gin.Context, defaultLng string) string {
 
 	return lng
 }
-

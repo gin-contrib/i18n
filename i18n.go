@@ -40,7 +40,7 @@ func Localize(opts ...Option) gin.HandlerFunc {
 				"name": context.Param("name"),
 			},
 	})
- */
+*/
 func GetMessage(param interface{}) (string, error) {
 	return atI18n.getMessage(param)
 }
@@ -55,7 +55,7 @@ func GetMessage(param interface{}) (string, error) {
 				"name": context.Param("name"),
 			},
 	})
- */
+*/
 func MustGetMessage(param interface{}) string {
 	return atI18n.mustGetMessage(param)
 }

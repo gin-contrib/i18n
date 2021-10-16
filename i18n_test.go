@@ -53,8 +53,8 @@ func makeRequest(
 
 func TestI18nEN(t *testing.T) {
 	type args struct {
-		lng    language.Tag
-		name   string
+		lng  language.Tag
+		name string
 	}
 	tests := []struct {
 		name string
@@ -65,7 +65,7 @@ func TestI18nEN(t *testing.T) {
 			name: "hello world",
 			args: args{
 				name: "",
-				lng: language.English,
+				lng:  language.English,
 			},
 			want: "hello",
 		},
@@ -73,7 +73,7 @@ func TestI18nEN(t *testing.T) {
 			name: "hello alex",
 			args: args{
 				name: "alex",
-				lng: language.English,
+				lng:  language.English,
 			},
 			want: "hello alex",
 		},
@@ -89,8 +89,8 @@ func TestI18nEN(t *testing.T) {
 
 func TestI18nDE(t *testing.T) {
 	type args struct {
-		lng    language.Tag
-		name   string
+		lng  language.Tag
+		name string
 	}
 	tests := []struct {
 		name string
@@ -101,7 +101,7 @@ func TestI18nDE(t *testing.T) {
 			name: "hallo",
 			args: args{
 				name: "",
-				lng: language.German,
+				lng:  language.German,
 			},
 			want: "hallo",
 		},
@@ -109,7 +109,7 @@ func TestI18nDE(t *testing.T) {
 			name: "hallo alex",
 			args: args{
 				name: "alex",
-				lng: language.German,
+				lng:  language.German,
 			},
 			want: "hallo alex",
 		},
@@ -125,8 +125,8 @@ func TestI18nDE(t *testing.T) {
 
 func TestI18nFR(t *testing.T) {
 	type args struct {
-		lng    language.Tag
-		name   string
+		lng  language.Tag
+		name string
 	}
 	tests := []struct {
 		name string
@@ -137,7 +137,7 @@ func TestI18nFR(t *testing.T) {
 			name: "bonjour",
 			args: args{
 				name: "",
-				lng: language.French,
+				lng:  language.French,
 			},
 			want: "bonjour",
 		},
@@ -145,7 +145,7 @@ func TestI18nFR(t *testing.T) {
 			name: "bonjour alex",
 			args: args{
 				name: "alex",
-				lng: language.French,
+				lng:  language.French,
 			},
 			want: "bonjour alex",
 		},
