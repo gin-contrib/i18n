@@ -2,16 +2,16 @@ package gini18n
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/stretchr/testify/assert"
+	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"golang.org/x/text/language"
-	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 )
 
 const (
-	testMessageID = "welcome"
+	testMessageIDWelcome = "welcome"
+	testMessageIDWelcomeWithName = "welcomeWithName"
 )
 
 func init() {
@@ -21,38 +21,143 @@ func init() {
 func newServer() *gin.Engine {
 	router := gin.New()
 	router.Use(Localize())
-	router.GET("/", func(c *gin.Context) {
-		c.String(200, MustGetMessage(testMessageID))
+
+	router.GET("/", func(context *gin.Context) {
+		context.String(http.StatusOK, MustGetMessage("welcome"))
 	})
+
+	router.GET("/:name", func(context *gin.Context) {
+		context.String(http.StatusOK, MustGetMessage(&i18n.LocalizeConfig{
+			MessageID: "welcomeWithName",
+			TemplateData: map[string]string{
+				"name": context.Param("name"),
+			},
+		}))
+	})
+
 	return router
 }
 
-func TestI18nEn(t *testing.T) {
-	req, _ := http.NewRequest("GET", "/", nil)
-	req.Header.Add("Accept-Language", language.English.String())
+func makeRequest(
+	lng language.Tag,
+	name string,
+) string {
+	path := "/" + name
+	req, _ := http.NewRequest("GET", path, nil)
+	req.Header.Add("Accept-Language", lng.String())
 
 	// Perform the request
 	w := httptest.NewRecorder()
 	r := newServer()
 	r.ServeHTTP(w, req)
 
+	return w.Body.String()
+}
 
-	log.Println(w.Body.String())
-	assert.Equal(t, w.Code, 200)
-	assert.Equal(t, w.Body.String(), "hello")
+func TestI18nEN(t *testing.T) {
+	type args struct {
+		lng    language.Tag
+		name   string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "hello world",
+			args: args{
+				name: "",
+				lng: language.English,
+			},
+			want: "hello",
+		},
+		{
+			name: "hello alex",
+			args: args{
+				name: "alex",
+				lng: language.English,
+			},
+			want: "hello alex",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := makeRequest(tt.args.lng, tt.args.name); got != tt.want {
+				t.Errorf("makeRequest() = %v, want %v", got, tt.want)
+			}
+		})
+	}
 }
 
 func TestI18nDE(t *testing.T) {
-	req, _ := http.NewRequest("GET", "/", nil)
-	req.Header.Add("Accept-Language", language.German.String())
+	type args struct {
+		lng    language.Tag
+		name   string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "hallo",
+			args: args{
+				name: "",
+				lng: language.German,
+			},
+			want: "hallo",
+		},
+		{
+			name: "hallo alex",
+			args: args{
+				name: "alex",
+				lng: language.German,
+			},
+			want: "hallo alex",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := makeRequest(tt.args.lng, tt.args.name); got != tt.want {
+				t.Errorf("makeRequest() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
 
-	// Perform the request
-	w := httptest.NewRecorder()
-	r := newServer()
-	r.ServeHTTP(w, req)
-
-
-	log.Println(w.Body.String())
-	assert.Equal(t, w.Code, 200)
-	assert.Equal(t, w.Body.String(), "hello german")
+func TestI18nFR(t *testing.T) {
+	type args struct {
+		lng    language.Tag
+		name   string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "bonjour",
+			args: args{
+				name: "",
+				lng: language.French,
+			},
+			want: "bonjour",
+		},
+		{
+			name: "bonjour alex",
+			args: args{
+				name: "alex",
+				lng: language.French,
+			},
+			want: "bonjour alex",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := makeRequest(tt.args.lng, tt.args.name); got != tt.want {
+				t.Errorf("makeRequest() = %v, want %v", got, tt.want)
+			}
+		})
+	}
 }

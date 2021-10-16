@@ -23,7 +23,7 @@ type ginI18nImpl struct {
 
 // getMessage get localize message by lng and messageID
 func (i *ginI18nImpl) getMessage(param interface{}) (string, error) {
-	lng := i.getLngHandler(i.currentContext)
+	lng := i.getLngHandler(i.currentContext, i.defaultLanguage.String())
 	localizer := i.getLocalizerByLng(lng)
 
 	localizeConfig, err := i.getLocalizeConfig(param)
