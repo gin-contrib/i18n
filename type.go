@@ -7,5 +7,5 @@ type (
 	GetLngHandler = func(context *gin.Context, defaultLng string) string
 
 	// Option ...
-	Option        func(GinI18n)
+	Option func(GinI18n)
 )
