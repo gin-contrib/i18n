@@ -9,11 +9,6 @@ import (
 	"testing"
 )
 
-const (
-	testMessageIDWelcome = "welcome"
-	testMessageIDWelcomeWithName = "welcomeWithName"
-)
-
 func init() {
 	gin.SetMode(gin.ReleaseMode)
 }
