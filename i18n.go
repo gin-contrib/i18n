@@ -1,12 +1,37 @@
-package i18n
+package gini18n
 
 import (
-	"context"
+	"github.com/gin-gonic/gin"
 )
 
-type I18n interface {
-	GetMessage(param interface{}) (string, error)
-	MustGetMessage(param interface{}) string
+var atI18n GinI18n
 
-	setCurrentContext(ctx context.Context)
+func newI18n(opts ...Option) {
+	// init default value
+	ins := &ginI18nImpl{
+		getLngHandler: defaultGetLngHandler,
+	}
+	ins.setBundle(defaultBundleConfig)
+
+	// overwrite default value by options
+	for _, opt := range opts {
+		opt(ins)
+	}
+
+	atI18n = ins
+}
+
+func Localize(opts ...Option) gin.HandlerFunc {
+	newI18n(opts...)
+	return func(context *gin.Context) {
+		atI18n.setCurrentContext(context)
+	}
+}
+
+func GetMessage(param interface{}) (string, error) {
+	return atI18n.getMessage(param)
+}
+
+func MustGetMessage(param interface{}) string {
+	return atI18n.mustGetMessage(param)
 }

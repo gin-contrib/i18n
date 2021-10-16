@@ -1,4 +1,4 @@
-package i18n
+package gini18n
 
 import (
 	"golang.org/x/text/language"
@@ -6,16 +6,24 @@ import (
 )
 
 const (
-	DefaultFormatBundleFile = "yaml"
+	defaultFormatBundleFile = "yaml"
+	defaultRootPath         = "./example/localize"
 )
 
 var (
-	DefaultLanguage      = language.English
-	DefaultUnmarshalFunc = yaml.Unmarshal
-
-	DefaultAcceptLanguage = []language.Tag{
-		DefaultLanguage,
+	defaultLanguage       = language.English
+	defaultUnmarshalFunc  = yaml.Unmarshal
+	defaultAcceptLanguage = []language.Tag{
+		defaultLanguage,
 		language.German,
 		language.French,
+	}
+
+	defaultBundleConfig = &BundleCfg{
+		RootPath:         defaultRootPath,
+		AcceptLanguage:   defaultAcceptLanguage,
+		FormatBundleFile: defaultFormatBundleFile,
+		DefaultLanguage:  defaultLanguage,
+		UnmarshalFunc:    defaultUnmarshalFunc,
 	}
 )

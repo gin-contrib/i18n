@@ -1,2 +1,2 @@
-welcome: hello
+welcome: hello german
 welcomeWithName: hello {{ .name }}
