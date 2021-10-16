@@ -11,7 +11,7 @@
 Download and install it:
 
 ```sh
-go get  go get github.com/bos-hieu/gin-i18n
+go get github.com/bos-hieu/gin-i18n
 ```
 
 Import it in your code:
