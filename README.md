@@ -11,13 +11,13 @@
 Download and install it:
 
 ```sh
-go get github.com/bos-hieu/gin-i18n
+go get github.com/gin-contrib/gin-i18n
 ```
 
 Import it in your code:
 
 ```go
-import gini18n "github.com/bos-hieu/gin-i18n"
+import gini18n "github.com/gin-contrib/gin-i18n"
 ```
 
 Canonical example:
@@ -26,11 +26,12 @@ Canonical example:
 package main
 
 import (
-	gini18n "github.com/bos-hieu/gin-i18n"
-	"github.com/gin-gonic/gin"
-	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"log"
 	"net/http"
+
+	gini18n "github.com/gin-contrib/gin-i18n"
+	"github.com/gin-gonic/gin"
+	"github.com/nicksnyder/go-i18n/v2/i18n"
 )
 
 func main() {
@@ -61,17 +62,19 @@ func main() {
 ```
 
 Customized Bundle
+
 ```go
 package main
 
 import (
 	"encoding/json"
-	gini18n "github.com/bos-hieu/gin-i18n"
+	"log"
+	"net/http"
+
+	gini18n "github.com/gin-contrib/gin-i18n"
 	"github.com/gin-gonic/gin"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"golang.org/x/text/language"
-	"log"
-	"net/http"
 )
 
 func main() {
@@ -108,15 +111,17 @@ func main() {
 ```
 
 Customized Get Language Handler
+
 ```go
 package main
 
 import (
-	gini18n "github.com/bos-hieu/gin-i18n"
-	"github.com/gin-gonic/gin"
-	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"log"
 	"net/http"
+
+	gini18n "github.com/gin-contrib/gin-i18n"
+	"github.com/gin-gonic/gin"
+	"github.com/nicksnyder/go-i18n/v2/i18n"
 )
 
 func main() {
@@ -154,7 +159,6 @@ func main() {
 		log.Fatal(err)
 	}
 }
-
 ```
 
 ## License
