@@ -1,10 +1,10 @@
 # i18n
 
-[![Run Tests](https://github.com/bos-hieu/gin-i18n/actions/workflows/go.yml/badge.svg)](https://github.com/bos-hieu/gin-i18n/actions/workflows/go.yml)
-[![CodeQL](https://github.com/bos-hieu/gin-i18n/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/bos-hieu/gin-i18n/actions/workflows/codeql-analysis.yml)
-[![codecov](https://codecov.io/gh/bos-hieu/i18n/branch/master/graph/badge.svg?token=QNMN3KM28Y)](https://codecov.io/gh/bos-hieu/i18n)
-[![GoDoc](https://godoc.org/github.com/bos-hieu/gin-i18n?status.svg)](https://godoc.org/github.com/bos-hieu/gin-i18n)
-[![Go Report Card](https://goreportcard.com/badge/github.com/bos-hieu/gin-i18n)](https://goreportcard.com/report/github.com/bos-hieu/gin-i18n)
+[![Run Tests](https://github.com/gin-contrib/gin-i18n/actions/workflows/go.yml/badge.svg)](https://github.com/gin-contrib/gin-i18n/actions/workflows/go.yml)
+[![CodeQL](https://github.com/gin-contrib/gin-i18n/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/gin-contrib/gin-i18n/actions/workflows/codeql-analysis.yml)
+[![codecov](https://codecov.io/gh/gin-contrib/i18n/branch/master/graph/badge.svg?token=QNMN3KM28Y)](https://codecov.io/gh/gin-contrib/i18n)
+[![GoDoc](https://godoc.org/github.com/gin-contrib/gin-i18n?status.svg)](https://godoc.org/github.com/gin-contrib/gin-i18n)
+[![Go Report Card](https://goreportcard.com/badge/github.com/gin-contrib/gin-i18n)](https://goreportcard.com/report/github.com/gin-contrib/gin-i18n)
 
 ## Usage
 

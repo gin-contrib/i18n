@@ -1,4 +1,4 @@
-package gini18n
+package i18n
 
 import "github.com/gin-gonic/gin"
 
