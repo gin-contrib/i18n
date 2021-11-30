@@ -12,11 +12,15 @@ func newI18n(opts ...Option) {
 	ins := &ginI18nImpl{
 		getLngHandler: defaultGetLngHandler,
 	}
-	ins.setBundle(defaultBundleConfig)
+	//ins.setBundle(defaultBundleConfig)
 
 	// overwrite default value by options
 	for _, opt := range opts {
 		opt(ins)
+	}
+
+	if ins.bundle == nil {
+		ins.setBundle(defaultBundleConfig)
 	}
 
 	atI18n = ins

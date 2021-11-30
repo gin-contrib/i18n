@@ -3,6 +3,7 @@ package i18n
 import (
 	"golang.org/x/text/language"
 	"gopkg.in/yaml.v3"
+	"io/ioutil"
 )
 
 const (
@@ -19,11 +20,16 @@ var (
 		language.French,
 	}
 
+	defaultLoader = LoaderFunc(func(path string) ([]byte, error) {
+		return ioutil.ReadFile(path)
+	})
+
 	defaultBundleConfig = &BundleCfg{
 		RootPath:         defaultRootPath,
 		AcceptLanguage:   defaultAcceptLanguage,
 		FormatBundleFile: defaultFormatBundleFile,
 		DefaultLanguage:  defaultLanguage,
 		UnmarshalFunc:    defaultUnmarshalFunc,
+		Loader:           defaultLoader,
 	}
 )
