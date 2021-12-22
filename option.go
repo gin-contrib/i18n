@@ -17,7 +17,7 @@ type BundleCfg struct {
 // WithBundle ...
 func WithBundle(config *BundleCfg) Option {
 	return func(g GinI18n) {
-		g.setBundle(config)
+		g.setCustomerBundle(config)
 	}
 }
 

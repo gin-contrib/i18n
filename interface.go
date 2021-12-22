@@ -11,5 +11,6 @@ type GinI18n interface {
 
 	setCurrentContext(ctx context.Context)
 	setBundle(cfg *BundleCfg)
+	setCustomerBundle(cfg *BundleCfg)
 	setGetLngHandler(handler GetLngHandler)
 }

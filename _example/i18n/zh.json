@@ -1,0 +1,4 @@
+{
+    "welcomeWithNameAndFood":"欢迎宝贝{{ .name }}, 我喜欢吃 {{ .food }}",
+    "welcome": "欢迎"
+}

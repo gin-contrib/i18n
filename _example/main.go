@@ -1,12 +1,14 @@
 package main
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 
 	ginI18n "github.com/gin-contrib/i18n"
 	"github.com/gin-gonic/gin"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
+	"golang.org/x/text/language"
 )
 
 func main() {
@@ -15,7 +17,13 @@ func main() {
 	router := gin.New()
 
 	// apply i18n middleware
-	router.Use(ginI18n.Localize())
+	r.Use(ginI18n.Localize(ginI18n.WithBundle(&ginI18n.BundleCfg{
+		RootPath:         "./i18n",
+		AcceptLanguage:   []language.Tag{language.Chinese, language.English},
+		DefaultLanguage:  language.English,
+		FormatBundleFile: "json",
+		UnmarshalFunc:    json.Unmarshal,
+	})))
 
 	router.GET("/", func(context *gin.Context) {
 		context.String(http.StatusOK, ginI18n.MustGetMessage("welcome"))

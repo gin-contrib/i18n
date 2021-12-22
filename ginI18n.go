@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"reflect"
 
 	"github.com/gin-gonic/gin"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
@@ -48,6 +49,28 @@ func (i *ginI18nImpl) mustGetMessage(param interface{}) string {
 
 func (i *ginI18nImpl) setCurrentContext(ctx context.Context) {
 	i.currentContext = ctx.(*gin.Context)
+}
+
+func (ginI18nImpl) setCustomerBundle(cfg *BundleCfg) {
+	if !reflect.DeepEqual(cfg.DefaultLanguage, language.Tag{}) {
+		defaultBundleConfig.DefaultLanguage = cfg.DefaultLanguage
+	}
+
+	if len(cfg.AcceptLanguage) != 0 {
+		defaultBundleConfig.AcceptLanguage = cfg.AcceptLanguage
+	}
+
+	if cfg.FormatBundleFile != "" {
+		defaultBundleConfig.FormatBundleFile = cfg.FormatBundleFile
+	}
+
+	if cfg.RootPath != "" {
+		defaultBundleConfig.RootPath = cfg.RootPath
+	}
+
+	if cfg.UnmarshalFunc != nil {
+		defaultBundleConfig.UnmarshalFunc = cfg.UnmarshalFunc
+	}
 }
 
 func (i *ginI18nImpl) setBundle(cfg *BundleCfg) {
