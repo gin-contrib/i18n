@@ -10,9 +10,7 @@ import (
 	"golang.org/x/text/language"
 )
 
-var (
-	_ GinI18n = (*ginI18nImpl)(nil)
-)
+var _ GinI18n = (*ginI18nImpl)(nil)
 
 type ginI18nImpl struct {
 	bundle          *i18n.Bundle
