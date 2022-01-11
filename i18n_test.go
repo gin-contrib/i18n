@@ -124,7 +124,7 @@ func makeRequest(
 	name string,
 ) string {
 	path := "/" + name
-	req, _ := http.NewRequest("GET", path, nil)
+	req, _ := http.NewRequestWithContext(context.Background(), "GET", path, nil)
 	req.Header.Add("Accept-Language", lng.String())
 
 	// Perform the request
