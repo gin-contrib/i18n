@@ -1,4 +1,0 @@
-{
-  "welcome": "hallo",
-  "welcomeWithName": "hallo {{ .name }}"
-}
