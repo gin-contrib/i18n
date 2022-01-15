@@ -26,38 +26,38 @@ Canonical example:
 package main
 
 import (
-	"log"
-	"net/http"
+  "log"
+  "net/http"
 
-	ginI18n "github.com/gin-contrib/i18n"
-	"github.com/gin-gonic/gin"
-	"github.com/nicksnyder/go-i18n/v2/i18n"
+  ginI18n "github.com/gin-contrib/i18n"
+  "github.com/gin-gonic/gin"
+  "github.com/nicksnyder/go-i18n/v2/i18n"
 )
 
 func main() {
-	// new gin engine
-	gin.SetMode(gin.ReleaseMode)
-	router := gin.New()
+  // new gin engine
+  gin.SetMode(gin.ReleaseMode)
+  router := gin.New()
 
-	// apply i18n middleware
-	router.Use(ginI18n.Localize())
+  // apply i18n middleware
+  router.Use(ginI18n.Localize())
 
-	router.GET("/", func(context *gin.Context) {
-		context.String(http.StatusOK, ginI18n.MustGetMessage("welcome"))
-	})
+  router.GET("/", func(context *gin.Context) {
+    context.String(http.StatusOK, ginI18n.MustGetMessage("welcome"))
+  })
 
-	router.GET("/:name", func(context *gin.Context) {
-		context.String(http.StatusOK, ginI18n.MustGetMessage(&i18n.LocalizeConfig{
-			MessageID: "welcomeWithName",
-			TemplateData: map[string]string{
-				"name": context.Param("name"),
-			},
-		}))
-	})
+  router.GET("/:name", func(context *gin.Context) {
+    context.String(http.StatusOK, ginI18n.MustGetMessage(&i18n.LocalizeConfig{
+      MessageID: "welcomeWithName",
+      TemplateData: map[string]string{
+        "name": context.Param("name"),
+      },
+    }))
+  })
 
-	if err := router.Run(":8080"); err != nil {
-		log.Fatal(err)
-	}
+  if err := router.Run(":8080"); err != nil {
+    log.Fatal(err)
+  }
 }
 ```
 
@@ -67,46 +67,46 @@ Customized Bundle
 package main
 
 import (
-	"encoding/json"
-	"log"
-	"net/http"
+  "encoding/json"
+  "log"
+  "net/http"
 
-	ginI18n "github.com/gin-contrib/i18n"
-	"github.com/gin-gonic/gin"
-	"github.com/nicksnyder/go-i18n/v2/i18n"
-	"golang.org/x/text/language"
+  ginI18n "github.com/gin-contrib/i18n"
+  "github.com/gin-gonic/gin"
+  "github.com/nicksnyder/go-i18n/v2/i18n"
+  "golang.org/x/text/language"
 )
 
 func main() {
-	// new gin engine
-	gin.SetMode(gin.ReleaseMode)
-	router := gin.New()
+  // new gin engine
+  gin.SetMode(gin.ReleaseMode)
+  router := gin.New()
 
-	// apply i18n middleware
-	router.Use(ginI18n.Localize(ginI18n.WithBundle(&ginI18n.BundleCfg{
-		RootPath:         "./example/localizeJSON",
-		AcceptLanguage:   []language.Tag{language.German, language.English},
-		DefaultLanguage:  language.English,
-		UnmarshalFunc:    json.Unmarshal,
-		FormatBundleFile: "json",
-	})))
+  // apply i18n middleware
+  router.Use(ginI18n.Localize(ginI18n.WithBundle(&ginI18n.BundleCfg{
+    RootPath:         "./_example/localizeJSON",
+    AcceptLanguage:   []language.Tag{language.German, language.English},
+    DefaultLanguage:  language.English,
+    UnmarshalFunc:    json.Unmarshal,
+    FormatBundleFile: "json",
+  })))
 
-	router.GET("/", func(context *gin.Context) {
-		context.String(http.StatusOK, ginI18n.MustGetMessage("welcome"))
-	})
+  router.GET("/", func(context *gin.Context) {
+    context.String(http.StatusOK, ginI18n.MustGetMessage("welcome"))
+  })
 
-	router.GET("/:name", func(context *gin.Context) {
-		context.String(http.StatusOK, ginI18n.MustGetMessage(&i18n.LocalizeConfig{
-			MessageID: "welcomeWithName",
-			TemplateData: map[string]string{
-				"name": context.Param("name"),
-			},
-		}))
-	})
+  router.GET("/:name", func(context *gin.Context) {
+    context.String(http.StatusOK, ginI18n.MustGetMessage(&i18n.LocalizeConfig{
+      MessageID: "welcomeWithName",
+      TemplateData: map[string]string{
+        "name": context.Param("name"),
+      },
+    }))
+  })
 
-	if err := router.Run(":8080"); err != nil {
-		log.Fatal(err)
-	}
+  if err := router.Run(":8080"); err != nil {
+    log.Fatal(err)
+  }
 }
 ```
 
@@ -116,48 +116,48 @@ Customized Get Language Handler
 package main
 
 import (
-	"log"
-	"net/http"
+  "log"
+  "net/http"
 
-	ginI18n "github.com/gin-contrib/i18n"
-	"github.com/gin-gonic/gin"
-	"github.com/nicksnyder/go-i18n/v2/i18n"
+  ginI18n "github.com/gin-contrib/i18n"
+  "github.com/gin-gonic/gin"
+  "github.com/nicksnyder/go-i18n/v2/i18n"
 )
 
 func main() {
-	// new gin engine
-	gin.SetMode(gin.ReleaseMode)
-	router := gin.New()
+  // new gin engine
+  gin.SetMode(gin.ReleaseMode)
+  router := gin.New()
 
-	// apply i18n middleware
-	router.Use(ginI18n.Localize(
-		ginI18n.WithGetLngHandle(
-			func(context *gin.Context, defaultLng string) string {
-				lng := context.Query("lng")
-				if lng == "" {
-					return defaultLng
-				}
-				return lng
-			},
-		),
-	))
+  // apply i18n middleware
+  router.Use(ginI18n.Localize(
+    ginI18n.WithGetLngHandle(
+      func(context *gin.Context, defaultLng string) string {
+        lng := context.Query("lng")
+        if lng == "" {
+          return defaultLng
+        }
+        return lng
+      },
+    ),
+  ))
 
-	router.GET("/", func(context *gin.Context) {
-		context.String(http.StatusOK, ginI18n.MustGetMessage("welcome"))
-	})
+  router.GET("/", func(context *gin.Context) {
+    context.String(http.StatusOK, ginI18n.MustGetMessage("welcome"))
+  })
 
-	router.GET("/:name", func(context *gin.Context) {
-		context.String(http.StatusOK, ginI18n.MustGetMessage(&i18n.LocalizeConfig{
-			MessageID: "welcomeWithName",
-			TemplateData: map[string]string{
-				"name": context.Param("name"),
-			},
-		}))
-	})
+  router.GET("/:name", func(context *gin.Context) {
+    context.String(http.StatusOK, ginI18n.MustGetMessage(&i18n.LocalizeConfig{
+      MessageID: "welcomeWithName",
+      TemplateData: map[string]string{
+        "name": context.Param("name"),
+      },
+    }))
+  })
 
-	if err := router.Run(":8080"); err != nil {
-		log.Fatal(err)
-	}
+  if err := router.Run(":8080"); err != nil {
+    log.Fatal(err)
+  }
 }
 ```
 
