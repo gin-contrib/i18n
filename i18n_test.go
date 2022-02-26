@@ -1,6 +1,7 @@
 package i18n
 
 import (
+	"context"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -9,10 +10,6 @@ import (
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"golang.org/x/text/language"
 )
-
-func init() {
-	gin.SetMode(gin.ReleaseMode)
-}
 
 // newServer ...
 func newServer() *gin.Engine {
@@ -41,7 +38,7 @@ func makeRequest(
 	name string,
 ) string {
 	path := "/" + name
-	req, _ := http.NewRequest("GET", path, nil)
+	req, _ := http.NewRequestWithContext(context.Background(), "GET", path, nil)
 	req.Header.Add("Accept-Language", lng.String())
 
 	// Perform the request

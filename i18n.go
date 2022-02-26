@@ -8,19 +8,22 @@ var atI18n GinI18n
 
 // newI18n ...
 func newI18n(opts ...Option) {
-	// init default value
-	ins := &ginI18nImpl{
-		getLngHandler: defaultGetLngHandler,
-	}
-	//ins.setBundle(defaultBundleConfig)
+	// init ins
+	ins := &ginI18nImpl{}
 
-	// overwrite default value by options
+	// set ins property from opts
 	for _, opt := range opts {
 		opt(ins)
 	}
 
+	// 	if bundle isn't constructed then assign it from default
 	if ins.bundle == nil {
 		ins.setBundle(defaultBundleConfig)
+	}
+
+	// if getLngHandler isn't constructed then assign it from default
+	if ins.getLngHandler == nil {
+		ins.getLngHandler = defaultGetLngHandler
 	}
 
 	atI18n = ins
