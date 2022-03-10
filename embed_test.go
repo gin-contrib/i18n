@@ -1,14 +1,16 @@
 package i18n
 
 import (
+	"context"
 	"embed"
 	"encoding/json"
-	"github.com/gin-gonic/gin"
-	"github.com/nicksnyder/go-i18n/v2/i18n"
-	"golang.org/x/text/language"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/gin-gonic/gin"
+	"github.com/nicksnyder/go-i18n/v2/i18n"
+	"golang.org/x/text/language"
 )
 
 type server struct {
@@ -37,7 +39,8 @@ func newEmbedServer(middleware ...gin.HandlerFunc) *server {
 
 func (s *server) request(lng language.Tag, name string) string {
 	path := "/" + name
-	req, _ := http.NewRequest("GET", path, nil)
+	ctx := context.Background()
+	req, _ := http.NewRequestWithContext(ctx, "GET", path, nil)
 	req.Header.Add("Accept-Language", lng.String())
 
 	w := httptest.NewRecorder()
