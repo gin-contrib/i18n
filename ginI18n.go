@@ -67,9 +67,7 @@ func (i *ginI18nImpl) setGetLngHandler(handler GetLngHandler) {
 // loadMessageFiles load all file localize to bundle
 func (i *ginI18nImpl) loadMessageFiles(config *BundleCfg) {
 	for _, lng := range config.AcceptLanguage {
-		// path := fmt.Sprintf("%s/%s.%s", config.RootPath, lng.String(), config.FileExt)
 		path := filepath.Join(config.RootPath, lng.String()) + "." + config.FormatBundleFile
-		//i.bundle.MustLoadMessageFile(path)
 		if err := i.loadMessageFile(config, path); err != nil {
 			panic(err)
 		}
