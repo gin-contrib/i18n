@@ -12,11 +12,23 @@ type BundleCfg struct {
 	AcceptLanguage   []language.Tag
 	RootPath         string
 	UnmarshalFunc    i18n.UnmarshalFunc
+	Loader           Loader
 }
+
+type Loader interface {
+	LoadMessage(path string) ([]byte, error)
+}
+
+type LoaderFunc func(path string) ([]byte, error)
+
+func (f LoaderFunc) LoadMessage(path string) ([]byte, error) { return f(path) }
 
 // WithBundle ...
 func WithBundle(config *BundleCfg) Option {
 	return func(g GinI18n) {
+		if config.Loader == nil {
+			config.Loader = defaultLoader
+		}
 		g.setBundle(config)
 	}
 }
