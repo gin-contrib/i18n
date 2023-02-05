@@ -43,11 +43,11 @@ func main() {
   router.Use(ginI18n.Localize())
 
   router.GET("/", func(context *gin.Context) {
-    context.String(http.StatusOK, ginI18n.MustGetMessage("welcome"))
+    context.String(http.StatusOK, ginI18n.MustGetMessage(context, "welcome"))
   })
 
   router.GET("/:name", func(context *gin.Context) {
-    context.String(http.StatusOK, ginI18n.MustGetMessage(&i18n.LocalizeConfig{
+    context.String(http.StatusOK, ginI18n.MustGetMessage(context, &i18n.LocalizeConfig{
       MessageID: "welcomeWithName",
       TemplateData: map[string]string{
         "name": context.Param("name"),
@@ -92,11 +92,11 @@ func main() {
   })))
 
   router.GET("/", func(context *gin.Context) {
-    context.String(http.StatusOK, ginI18n.MustGetMessage("welcome"))
+    context.String(http.StatusOK, ginI18n.MustGetMessage(context, "welcome"))
   })
 
   router.GET("/:name", func(context *gin.Context) {
-    context.String(http.StatusOK, ginI18n.MustGetMessage(&i18n.LocalizeConfig{
+    context.String(http.StatusOK, ginI18n.MustGetMessage(context, &i18n.LocalizeConfig{
       MessageID: "welcomeWithName",
       TemplateData: map[string]string{
         "name": context.Param("name"),
@@ -143,11 +143,11 @@ func main() {
   ))
 
   router.GET("/", func(context *gin.Context) {
-    context.String(http.StatusOK, ginI18n.MustGetMessage("welcome"))
+    context.String(http.StatusOK, ginI18n.MustGetMessage(context, "welcome"))
   })
 
   router.GET("/:name", func(context *gin.Context) {
-    context.String(http.StatusOK, ginI18n.MustGetMessage(&i18n.LocalizeConfig{
+    context.String(http.StatusOK, ginI18n.MustGetMessage(context, &i18n.LocalizeConfig{
       MessageID: "welcomeWithName",
       TemplateData: map[string]string{
         "name": context.Param("name"),

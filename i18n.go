@@ -41,8 +41,8 @@ GetMessage get the i18n message
 
 	 param is one of these type: messageID, *i18n.LocalizeConfig
 	 Example:
-		GetMessage("hello") // messageID is hello
-		GetMessage(&i18n.LocalizeConfig{
+		GetMessage(context, "hello") // messageID is hello
+		GetMessage(context, &i18n.LocalizeConfig{
 				MessageID: "welcomeWithName",
 				TemplateData: map[string]string{
 					"name": context.Param("name"),
@@ -59,8 +59,8 @@ MustGetMessage get the i18n message without error handling
 
 	  param is one of these type: messageID, *i18n.LocalizeConfig
 	  Example:
-		MustGetMessage("hello") // messageID is hello
-		MustGetMessage(&i18n.LocalizeConfig{
+		MustGetMessage(context, "hello") // messageID is hello
+		MustGetMessage(context, &i18n.LocalizeConfig{
 				MessageID: "welcomeWithName",
 				TemplateData: map[string]string{
 					"name": context.Param("name"),
