@@ -1,4 +1,4 @@
-module github.com/gin-contrib/i18n
+module github.com/bizflycloud/i18n
 
 go 1.16
 

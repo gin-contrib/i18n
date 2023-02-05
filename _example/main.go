@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	ginI18n "github.com/gin-contrib/i18n"
+	ginI18n "github.com/bizflycloud/i18n"
 	"github.com/gin-gonic/gin"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 )
