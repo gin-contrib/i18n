@@ -4,10 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var atI18n GinI18n
-
 // newI18n ...
-func newI18n(opts ...Option) {
+func newI18n(opts ...Option) GinI18n {
 	// init ins
 	ins := &ginI18nImpl{}
 
@@ -26,43 +24,50 @@ func newI18n(opts ...Option) {
 		ins.getLngHandler = defaultGetLngHandler
 	}
 
-	atI18n = ins
+	return ins
 }
 
 // Localize ...
 func Localize(opts ...Option) gin.HandlerFunc {
-	newI18n(opts...)
+	atI18n := newI18n(opts...)
 	return func(context *gin.Context) {
+		context.Set("i18n", atI18n)
 		atI18n.setCurrentContext(context)
 	}
 }
 
-/*GetMessage get the i18n message
- param is one of these type: messageID, *i18n.LocalizeConfig
- Example:
-	GetMessage("hello") // messageID is hello
-	GetMessage(&i18n.LocalizeConfig{
-			MessageID: "welcomeWithName",
-			TemplateData: map[string]string{
-				"name": context.Param("name"),
-			},
-	})
+/*
+GetMessage get the i18n message
+
+	 param is one of these type: messageID, *i18n.LocalizeConfig
+	 Example:
+		GetMessage("hello") // messageID is hello
+		GetMessage(&i18n.LocalizeConfig{
+				MessageID: "welcomeWithName",
+				TemplateData: map[string]string{
+					"name": context.Param("name"),
+				},
+		})
 */
-func GetMessage(param interface{}) (string, error) {
+func GetMessage(context *gin.Context, param interface{}) (string, error) {
+	atI18n := context.MustGet("i18n").(GinI18n)
 	return atI18n.getMessage(param)
 }
 
-/*MustGetMessage get the i18n message without error handling
-  param is one of these type: messageID, *i18n.LocalizeConfig
-  Example:
-	MustGetMessage("hello") // messageID is hello
-	MustGetMessage(&i18n.LocalizeConfig{
-			MessageID: "welcomeWithName",
-			TemplateData: map[string]string{
-				"name": context.Param("name"),
-			},
-	})
+/*
+MustGetMessage get the i18n message without error handling
+
+	  param is one of these type: messageID, *i18n.LocalizeConfig
+	  Example:
+		MustGetMessage("hello") // messageID is hello
+		MustGetMessage(&i18n.LocalizeConfig{
+				MessageID: "welcomeWithName",
+				TemplateData: map[string]string{
+					"name": context.Param("name"),
+				},
+		})
 */
-func MustGetMessage(param interface{}) string {
+func MustGetMessage(context *gin.Context, param interface{}) string {
+	atI18n := context.MustGet("i18n").(GinI18n)
 	return atI18n.mustGetMessage(param)
 }
