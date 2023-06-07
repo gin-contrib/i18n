@@ -25,11 +25,11 @@ func newEmbedServer(middleware ...gin.HandlerFunc) *server {
 	server.Use(middleware...)
 
 	server.GET("/", func(context *gin.Context) {
-		context.String(http.StatusOK, MustGetMessage("welcome"))
+		context.String(http.StatusOK, MustGetMessage(context, "welcome"))
 	})
 
 	server.GET("/:name", func(context *gin.Context) {
-		context.String(http.StatusOK, MustGetMessage(&i18n.LocalizeConfig{
+		context.String(http.StatusOK, MustGetMessage(context, &i18n.LocalizeConfig{
 			MessageID: "welcomeWithName",
 			TemplateData: map[string]string{
 				"name": context.Param("name"),

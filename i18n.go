@@ -1,7 +1,6 @@
 package i18n
 
 import (
-	"context"
 	"github.com/gin-gonic/gin"
 )
 
@@ -50,8 +49,8 @@ GetMessage get the i18n message
 				},
 		})
 */
-func GetMessage(context context.Context, param interface{}) (string, error) {
-	atI18n := context.Value("i18n").(GinI18n)
+func GetMessage(context *gin.Context, param interface{}) (string, error) {
+	atI18n := context.MustGet("i18n").(GinI18n)
 	return atI18n.getMessage(param)
 }
 
@@ -68,7 +67,7 @@ MustGetMessage get the i18n message without error handling
 				},
 		})
 */
-func MustGetMessage(context context.Context, param interface{}) string {
-	atI18n := context.Value("i18n").(GinI18n)
+func MustGetMessage(context *gin.Context, param interface{}) string {
+	atI18n := context.MustGet("i18n").(GinI18n)
 	return atI18n.mustGetMessage(param)
 }
