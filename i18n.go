@@ -32,7 +32,6 @@ func Localize(opts ...Option) gin.HandlerFunc {
 	atI18n := newI18n(opts...)
 	return func(context *gin.Context) {
 		context.Set("i18n", atI18n)
-		atI18n.setCurrentContext(context)
 	}
 }
 
@@ -50,8 +49,8 @@ GetMessage get the i18n message
 		})
 */
 func GetMessage(context *gin.Context, param interface{}) (string, error) {
-	atI18n := context.MustGet("i18n").(GinI18n)
-	return atI18n.getMessage(param)
+	atI18n := context.Value("i18n").(GinI18n)
+	return atI18n.getMessage(context, param)
 }
 
 /*
@@ -69,5 +68,5 @@ MustGetMessage get the i18n message without error handling
 */
 func MustGetMessage(context *gin.Context, param interface{}) string {
 	atI18n := context.MustGet("i18n").(GinI18n)
-	return atI18n.mustGetMessage(param)
+	return atI18n.mustGetMessage(context, param)
 }
