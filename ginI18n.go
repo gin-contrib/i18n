@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"path/filepath"
+	"path"
 
 	"github.com/gin-gonic/gin"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
@@ -67,20 +67,20 @@ func (i *ginI18nImpl) setGetLngHandler(handler GetLngHandler) {
 // loadMessageFiles load all file localize to bundle
 func (i *ginI18nImpl) loadMessageFiles(config *BundleCfg) {
 	for _, lng := range config.AcceptLanguage {
-		path := filepath.Join(config.RootPath, lng.String()) + "." + config.FormatBundleFile
-		if err := i.loadMessageFile(config, path); err != nil {
+		src := path.Join(config.RootPath, lng.String()) + "." + config.FormatBundleFile
+		if err := i.loadMessageFile(config, src); err != nil {
 			panic(err)
 		}
 	}
 }
 
-func (i *ginI18nImpl) loadMessageFile(config *BundleCfg, path string) error {
-	buf, err := config.Loader.LoadMessage(path)
+func (i *ginI18nImpl) loadMessageFile(config *BundleCfg, src string) error {
+	buf, err := config.Loader.LoadMessage(src)
 	if err != nil {
 		return err
 	}
 
-	if _, err = i.bundle.ParseMessageFileBytes(buf, path); err != nil {
+	if _, err = i.bundle.ParseMessageFileBytes(buf, src); err != nil {
 		return err
 	}
 	return nil
