@@ -17,17 +17,19 @@ func main() {
 	// apply i18n middleware
 	router.Use(ginI18n.Localize())
 
-	router.GET("/", func(context *gin.Context) {
-		context.String(http.StatusOK, ginI18n.MustGetMessage("welcome"))
+	router.GET("/", func(ctx *gin.Context) {
+		ctx.String(http.StatusOK, ginI18n.MustGetMessage(ctx, "welcome"))
 	})
 
-	router.GET("/:name", func(context *gin.Context) {
-		context.String(http.StatusOK, ginI18n.MustGetMessage(&i18n.LocalizeConfig{
-			MessageID: "welcomeWithName",
-			TemplateData: map[string]string{
-				"name": context.Param("name"),
-			},
-		}))
+	router.GET("/:name", func(ctx *gin.Context) {
+		ctx.String(http.StatusOK, ginI18n.MustGetMessage(
+			ctx,
+			&i18n.LocalizeConfig{
+				MessageID: "welcomeWithName",
+				TemplateData: map[string]string{
+					"name": ctx.Param("name"),
+				},
+			}))
 	})
 
 	if err := router.Run(":8080"); err != nil {
