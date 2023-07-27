@@ -1,7 +1,6 @@
 package i18n
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"path"
@@ -15,15 +14,14 @@ var _ GinI18n = (*ginI18nImpl)(nil)
 
 type ginI18nImpl struct {
 	bundle          *i18n.Bundle
-	currentContext  *gin.Context
 	localizerByLng  map[string]*i18n.Localizer
 	defaultLanguage language.Tag
 	getLngHandler   GetLngHandler
 }
 
 // getMessage get localize message by lng and messageID
-func (i *ginI18nImpl) getMessage(param interface{}) (string, error) {
-	lng := i.getLngHandler(i.currentContext, i.defaultLanguage.String())
+func (i *ginI18nImpl) getMessage(ctx *gin.Context, param interface{}) (string, error) {
+	lng := i.getLngHandler(ctx, i.defaultLanguage.String())
 	localizer := i.getLocalizerByLng(lng)
 
 	localizeConfig, err := i.getLocalizeConfig(param)
@@ -40,13 +38,9 @@ func (i *ginI18nImpl) getMessage(param interface{}) (string, error) {
 }
 
 // mustGetMessage ...
-func (i *ginI18nImpl) mustGetMessage(param interface{}) string {
-	message, _ := i.getMessage(param)
+func (i *ginI18nImpl) mustGetMessage(ctx *gin.Context, param interface{}) string {
+	message, _ := i.getMessage(ctx, param)
 	return message
-}
-
-func (i *ginI18nImpl) setCurrentContext(ctx context.Context) {
-	i.currentContext = ctx.(*gin.Context)
 }
 
 func (i *ginI18nImpl) setBundle(cfg *BundleCfg) {

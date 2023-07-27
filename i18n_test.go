@@ -17,11 +17,11 @@ func newServer() *gin.Engine {
 	router.Use(Localize())
 
 	router.GET("/", func(context *gin.Context) {
-		context.String(http.StatusOK, MustGetMessage("welcome"))
+		context.String(http.StatusOK, MustGetMessage(context, "welcome"))
 	})
 
 	router.GET("/:name", func(context *gin.Context) {
-		context.String(http.StatusOK, MustGetMessage(&i18n.LocalizeConfig{
+		context.String(http.StatusOK, MustGetMessage(context, &i18n.LocalizeConfig{
 			MessageID: "welcomeWithName",
 			TemplateData: map[string]string{
 				"name": context.Param("name"),
