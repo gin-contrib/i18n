@@ -86,7 +86,7 @@ func main() {
 
   // apply i18n middleware
   router.Use(ginI18n.Localize(ginI18n.WithBundle(&ginI18n.BundleCfg{
-    RootPath:         "./_example/localizeJSON",
+    RootPath:         "./testdata/localizeJSON",
     AcceptLanguage:   []language.Tag{language.German, language.English},
     DefaultLanguage:  language.English,
     UnmarshalFunc:    json.Unmarshal,
