@@ -53,14 +53,14 @@ func (s *server) request(lng language.Tag, name string) string {
 }
 
 var (
-	//go:embed _example/localizeJSON/*
+	//go:embed testdata/localizeJSON/*
 	fs embed.FS
 
 	s = newEmbedServer(Localize(WithBundle(&BundleCfg{
 		DefaultLanguage:  language.English,
 		FormatBundleFile: "json",
 		AcceptLanguage:   []language.Tag{language.English, language.German, language.Chinese},
-		RootPath:         "./_example/localizeJSON/",
+		RootPath:         "./testdata/localizeJSON/",
 		UnmarshalFunc:    json.Unmarshal,
 		// After commenting this line, use defaultLoader
 		// it will be loaded from the file
