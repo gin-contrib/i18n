@@ -132,6 +132,8 @@ func (i *ginI18nImpl) getLocalizeConfig(param interface{}) (*i18n.LocalizeConfig
 		return localizeConfig, nil
 	case *i18n.LocalizeConfig:
 		return paramValue, nil
+	case i18n.LocalizeConfig:
+		return &paramValue, nil
 	}
 
 	msg := fmt.Sprintf("un supported localize param: %v", param)

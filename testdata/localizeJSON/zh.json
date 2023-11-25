@@ -1,4 +1,5 @@
 {
 	"welcome": "你好",
-	"welcomeWithName": "你好 {{ .name }}"
+	"welcomeWithName": "你好 {{ .name }}",
+	"welcomeWithAge": "我今年 {{ .age }} 岁了"
 }
