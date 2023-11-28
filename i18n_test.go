@@ -90,26 +90,7 @@ func TestI18nEN(t *testing.T) {
 			},
 			want: "I am 18 years old",
 		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := makeRequest(tt.args.lng, tt.args.path); got != tt.want {
-				t.Errorf("makeRequest() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestI18nDE(t *testing.T) {
-	type args struct {
-		lng  language.Tag
-		path string
-	}
-	tests := []struct {
-		name string
-		args args
-		want string
-	}{
+		// German
 		{
 			name: "hallo",
 			args: args{
@@ -134,26 +115,7 @@ func TestI18nDE(t *testing.T) {
 			},
 			want: "ich bin 18 Jahre alt",
 		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := makeRequest(tt.args.lng, tt.args.path); got != tt.want {
-				t.Errorf("makeRequest() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestI18nFR(t *testing.T) {
-	type args struct {
-		lng  language.Tag
-		path string
-	}
-	tests := []struct {
-		name string
-		args args
-		want string
-	}{
+		// French
 		{
 			name: "bonjour",
 			args: args{
