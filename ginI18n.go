@@ -19,6 +19,15 @@ type ginI18nImpl struct {
 	getLngHandler   GetLngHandler
 }
 
+// HasLang check language is exist
+func (i *ginI18nImpl) HasLang(language string) bool {
+	if _, exist := i.localizerByLng[language]; exist {
+		return true
+	}
+
+	return false
+}
+
 // getMessage get localize message by lng and messageID
 func (i *ginI18nImpl) getMessage(ctx *gin.Context, param interface{}) (string, error) {
 	lng := i.getLngHandler(ctx, i.defaultLanguage.String())

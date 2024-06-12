@@ -10,4 +10,5 @@ type GinI18n interface {
 	mustGetMessage(context *gin.Context, param interface{}) string
 	setBundle(cfg *BundleCfg)
 	setGetLngHandler(handler GetLngHandler)
+	HasLang(language string) bool
 }

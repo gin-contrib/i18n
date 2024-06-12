@@ -2,6 +2,7 @@ package i18n
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -27,6 +28,9 @@ func newServer() *gin.Engine {
 				"name": context.Param("name"),
 			},
 		}))
+	})
+	router.GET("/exist/:lang", func(context *gin.Context) {
+		context.String(http.StatusOK, "%v", HasLang(context, context.Param("lang")))
 	})
 	router.GET("/age/:age", func(context *gin.Context) {
 		context.String(http.StatusOK, MustGetMessage(context, i18n.LocalizeConfig{
@@ -139,6 +143,23 @@ func TestI18nEN(t *testing.T) {
 				lng:  language.French,
 			},
 			want: "j'ai 18 ans",
+		},
+		// has exist
+		{
+			name: "i81n lang exist",
+			args: args{
+				path: fmt.Sprintf("/exist/%s", language.English.String()),
+				lng:  language.English,
+			},
+			want: "true",
+		},
+		{
+			name: "i81n lang not exist",
+			args: args{
+				path: fmt.Sprintf("/exist/%s", language.SimplifiedChinese.String()),
+				lng:  language.English,
+			},
+			want: "false",
 		},
 	}
 	for _, tt := range tests {

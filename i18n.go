@@ -66,3 +66,11 @@ func MustGetMessage(context *gin.Context, param interface{}) string {
 	atI18n := context.MustGet("i18n").(GinI18n)
 	return atI18n.mustGetMessage(context, param)
 }
+
+// HasLang check all i18n lang exists
+// Example:
+// HasLang(context, "ZH-cn") // return false or true
+func HasLang(context *gin.Context, language string) bool {
+	atI18n := context.MustGet("i18n").(GinI18n)
+	return atI18n.HasLang(language)
+}

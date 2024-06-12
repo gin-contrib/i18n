@@ -56,6 +56,10 @@ func main() {
         },
       }))
   })
+  
+  router.GET("/exist/:lang", func(ctx *gin.Context) {
+    ctx.String(http.StatusOK, "%v", ginI18n.HasLang(ctx, ctx.Param("lang")))
+  })
 
   if err := router.Run(":8080"); err != nil {
     log.Fatal(err)
@@ -106,6 +110,10 @@ func main() {
           "name": ctx.Param("name"),
         },
       }))
+  })
+
+  router.GET("/exist/:lang", func(ctx *gin.Context) {
+    ctx.String(http.StatusOK, "%v", ginI18n.HasLang(ctx, ctx.Param("lang")))
   })
 
   if err := router.Run(":8080"); err != nil {
@@ -159,6 +167,10 @@ func main() {
           "name": ctx.Param("name"),
         },
       }))
+  })
+
+  router.GET("/exist/:lang", func(ctx *gin.Context) {
+    ctx.String(http.StatusOK, "%v", ginI18n.HasLang(ctx, ctx.Param("lang")))
   })
 
   if err := router.Run(":8080"); err != nil {
