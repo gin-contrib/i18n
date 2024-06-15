@@ -19,8 +19,18 @@ type ginI18nImpl struct {
 	getLngHandler   GetLngHandler
 }
 
+// getDefaultLanguage get default language
+func (i *ginI18nImpl) getDefaultLanguage() language.Tag {
+	return i.defaultLanguage
+}
+
+// getCurrentLanguage get default language
+func (i *ginI18nImpl) getCurrentLanguage(context *gin.Context) language.Tag {
+	return language.Make(i.getLngHandler(context, i.defaultLanguage.String()))
+}
+
 // HasLang check language is exist
-func (i *ginI18nImpl) HasLang(language string) bool {
+func (i *ginI18nImpl) hasLang(language string) bool {
 	if _, exist := i.localizerByLng[language]; exist {
 		return true
 	}
@@ -137,6 +147,16 @@ func (i *ginI18nImpl) getLocalizeConfig(param interface{}) (*i18n.LocalizeConfig
 	case string:
 		localizeConfig := &i18n.LocalizeConfig{
 			MessageID: paramValue,
+		}
+		return localizeConfig, nil
+	case *i18n.Message:
+		localizeConfig := &i18n.LocalizeConfig{
+			DefaultMessage: paramValue,
+		}
+		return localizeConfig, nil
+	case i18n.Message:
+		localizeConfig := &i18n.LocalizeConfig{
+			DefaultMessage: &paramValue,
 		}
 		return localizeConfig, nil
 	case *i18n.LocalizeConfig:

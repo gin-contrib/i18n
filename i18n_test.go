@@ -32,6 +32,12 @@ func newServer() *gin.Engine {
 	router.GET("/exist/:lang", func(context *gin.Context) {
 		context.String(http.StatusOK, "%v", HasLang(context, context.Param("lang")))
 	})
+	router.GET("/lang/default", func(context *gin.Context) {
+		context.String(http.StatusOK, "%s", GetDefaultLanguage(context).String())
+	})
+	router.GET("/lang/current", func(context *gin.Context) {
+		context.String(http.StatusOK, "%s", GetCurrentLanguage(context).String())
+	})
 	router.GET("/age/:age", func(context *gin.Context) {
 		context.String(http.StatusOK, MustGetMessage(context, i18n.LocalizeConfig{
 			MessageID: "welcomeWithAge",
@@ -160,6 +166,40 @@ func TestI18nEN(t *testing.T) {
 				lng:  language.English,
 			},
 			want: "false",
+		},
+		// default lang
+		{
+			name: "i81n is default " + language.English.String(),
+			args: args{
+				path: "/lang/default",
+				lng:  language.English,
+			},
+			want: language.English.String(),
+		},
+		{
+			name: "i81n is not default " + language.German.String(),
+			args: args{
+				path: "/lang/default",
+				lng:  language.German,
+			},
+			want: language.English.String(),
+		},
+		// current lang
+		{
+			name: "i81n is current " + language.English.String(),
+			args: args{
+				path: "/lang/current",
+				lng:  language.English,
+			},
+			want: language.English.String(),
+		},
+		{
+			name: "i81n is not current " + language.English.String(),
+			args: args{
+				path: "/lang/current",
+				lng:  language.German,
+			},
+			want: language.German.String(),
 		},
 	}
 	for _, tt := range tests {

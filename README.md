@@ -61,6 +61,16 @@ func main() {
     ctx.String(http.StatusOK, "%v", ginI18n.HasLang(ctx, ctx.Param("lang")))
   })
 
+  // get the default and current language
+  router.GET("/lang/default", func(context *gin.Context) {
+		context.String(http.StatusOK, "%s", GetDefaultLanguage(context).String())
+	})
+
+  // get the current language
+	router.GET("/lang/current", func(context *gin.Context) {
+		context.String(http.StatusOK, "%s", GetCurrentLanguage(context).String())
+	})
+
   if err := router.Run(":8080"); err != nil {
     log.Fatal(err)
   }
@@ -115,6 +125,16 @@ func main() {
   router.GET("/exist/:lang", func(ctx *gin.Context) {
     ctx.String(http.StatusOK, "%v", ginI18n.HasLang(ctx, ctx.Param("lang")))
   })
+
+  // get the default and current language
+  router.GET("/lang/default", func(context *gin.Context) {
+		context.String(http.StatusOK, "%s", GetDefaultLanguage(context).String())
+	})
+
+  // get the current language
+	router.GET("/lang/current", func(context *gin.Context) {
+		context.String(http.StatusOK, "%s", GetCurrentLanguage(context).String())
+	})
 
   if err := router.Run(":8080"); err != nil {
     log.Fatal(err)
@@ -172,6 +192,16 @@ func main() {
   router.GET("/exist/:lang", func(ctx *gin.Context) {
     ctx.String(http.StatusOK, "%v", ginI18n.HasLang(ctx, ctx.Param("lang")))
   })
+
+  // get the default and current language
+  router.GET("/lang/default", func(context *gin.Context) {
+		context.String(http.StatusOK, "%s", GetDefaultLanguage(context).String())
+	})
+
+  // get the current language
+	router.GET("/lang/current", func(context *gin.Context) {
+		context.String(http.StatusOK, "%s", GetCurrentLanguage(context).String())
+	})
 
   if err := router.Run(":8080"); err != nil {
     log.Fatal(err)
