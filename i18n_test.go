@@ -21,7 +21,7 @@ func newServer() *gin.Engine {
 		context.String(http.StatusOK, MustGetMessage(context, "welcome"))
 	})
 
-	router.GET("/:name", func(context *gin.Context) {
+	router.GET("/messageId/:name", func(context *gin.Context) {
 		context.String(http.StatusOK, MustGetMessage(context, &i18n.LocalizeConfig{
 			MessageID: "welcomeWithName",
 			TemplateData: map[string]string{
@@ -29,6 +29,18 @@ func newServer() *gin.Engine {
 			},
 		}))
 	})
+
+	router.GET("/messageType/:name", func(context *gin.Context) {
+		context.String(http.StatusOK, MustGetMessage(context, &i18n.LocalizeConfig{
+			DefaultMessage: &i18n.Message{
+				ID: "welcomeWithName",
+			},
+			TemplateData: map[string]string{
+				"name": context.Param("name"),
+			},
+		}))
+	})
+
 	router.GET("/exist/:lang", func(context *gin.Context) {
 		context.String(http.StatusOK, "%v", HasLang(context, context.Param("lang")))
 	})
@@ -85,9 +97,17 @@ func TestI18nEN(t *testing.T) {
 			want: "hello",
 		},
 		{
-			name: "hello alex",
+			name: "hello alex - messageId",
 			args: args{
-				path: "/alex",
+				path: "/messageId/alex",
+				lng:  language.English,
+			},
+			want: "hello alex",
+		},
+		{
+			name: "hello alex - messageType",
+			args: args{
+				path: "/messageType/alex",
 				lng:  language.English,
 			},
 			want: "hello alex",
@@ -110,9 +130,17 @@ func TestI18nEN(t *testing.T) {
 			want: "hallo",
 		},
 		{
-			name: "hallo alex",
+			name: "hallo alex - messageId",
 			args: args{
-				path: "/alex",
+				path: "/messageId/alex",
+				lng:  language.German,
+			},
+			want: "hallo alex",
+		},
+		{
+			name: "hallo alex - messageType",
+			args: args{
+				path: "/messageType/alex",
 				lng:  language.German,
 			},
 			want: "hallo alex",
@@ -135,9 +163,17 @@ func TestI18nEN(t *testing.T) {
 			want: "bonjour",
 		},
 		{
-			name: "bonjour alex",
+			name: "bonjour alex - messageId",
 			args: args{
-				path: "/alex",
+				path: "/messageId/alex",
+				lng:  language.French,
+			},
+			want: "bonjour alex",
+		},
+		{
+			name: "bonjour alex - messageType",
+			args: args{
+				path: "/messageType/alex",
 				lng:  language.French,
 			},
 			want: "bonjour alex",

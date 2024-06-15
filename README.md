@@ -46,16 +46,25 @@ func main() {
     ctx.String(http.StatusOK, ginI18n.MustGetMessage(ctx, "welcome"))
   })
 
-  router.GET("/:name", func(ctx *gin.Context) {
-    ctx.String(http.StatusOK, ginI18n.MustGetMessage(
-      ctx,
-      &i18n.LocalizeConfig{
-        MessageID: "welcomeWithName",
-        TemplateData: map[string]string{
-          "name": ctx.Param("name"),
-        },
-      }))
-  })
+	router.GET("/messageId/:name", func(context *gin.Context) {
+		context.String(http.StatusOK, MustGetMessage(context, &i18n.LocalizeConfig{
+			MessageID: "welcomeWithName",
+			TemplateData: map[string]string{
+				"name": context.Param("name"),
+			},
+		}))
+	})
+
+	router.GET("/messageType/:name", func(context *gin.Context) {
+		context.String(http.StatusOK, MustGetMessage(context, &i18n.LocalizeConfig{
+			DefaultMessage: &i18n.Message{
+				ID: "welcomeWithName",
+			},
+			TemplateData: map[string]string{
+				"name": context.Param("name"),
+			},
+		}))
+	})
   
   router.GET("/exist/:lang", func(ctx *gin.Context) {
     ctx.String(http.StatusOK, "%v", ginI18n.HasLang(ctx, ctx.Param("lang")))
@@ -111,16 +120,25 @@ func main() {
     ctx.String(http.StatusOK, ginI18n.MustGetMessage(ctx, "welcome"))
   })
 
-  router.GET("/:name", func(ctx *gin.Context) {
-    ctx.String(http.StatusOK, ginI18n.MustGetMessage(
-      ctx,
-      &i18n.LocalizeConfig{
-        MessageID: "welcomeWithName",
-        TemplateData: map[string]string{
-          "name": ctx.Param("name"),
-        },
-      }))
-  })
+	router.GET("/messageId/:name", func(context *gin.Context) {
+		context.String(http.StatusOK, MustGetMessage(context, &i18n.LocalizeConfig{
+			MessageID: "welcomeWithName",
+			TemplateData: map[string]string{
+				"name": context.Param("name"),
+			},
+		}))
+	})
+
+	router.GET("/messageType/:name", func(context *gin.Context) {
+		context.String(http.StatusOK, MustGetMessage(context, &i18n.LocalizeConfig{
+			DefaultMessage: &i18n.Message{
+				ID: "welcomeWithName",
+			},
+			TemplateData: map[string]string{
+				"name": context.Param("name"),
+			},
+		}))
+	})
 
   router.GET("/exist/:lang", func(ctx *gin.Context) {
     ctx.String(http.StatusOK, "%v", ginI18n.HasLang(ctx, ctx.Param("lang")))
@@ -178,16 +196,25 @@ func main() {
     ctx.String(http.StatusOK, ginI18n.MustGetMessage(ctx, "welcome"))
   })
 
-  router.GET("/:name", func(ctx *gin.Context) {
-    ctx.String(http.StatusOK, ginI18n.MustGetMessage(
-      ctx,
-      &i18n.LocalizeConfig{
-        MessageID: "welcomeWithName",
-        TemplateData: map[string]string{
-          "name": ctx.Param("name"),
-        },
-      }))
-  })
+	router.GET("/messageId/:name", func(context *gin.Context) {
+		context.String(http.StatusOK, MustGetMessage(context, &i18n.LocalizeConfig{
+			MessageID: "welcomeWithName",
+			TemplateData: map[string]string{
+				"name": context.Param("name"),
+			},
+		}))
+	})
+
+	router.GET("/messageType/:name", func(context *gin.Context) {
+		context.String(http.StatusOK, MustGetMessage(context, &i18n.LocalizeConfig{
+			DefaultMessage: &i18n.Message{
+				ID: "welcomeWithName",
+			},
+			TemplateData: map[string]string{
+				"name": context.Param("name"),
+			},
+		}))
+	})
 
   router.GET("/exist/:lang", func(ctx *gin.Context) {
     ctx.String(http.StatusOK, "%v", ginI18n.HasLang(ctx, ctx.Param("lang")))
