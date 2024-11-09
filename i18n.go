@@ -17,7 +17,7 @@ func newI18n(opts ...Option) GinI18n {
 
 	// 	if bundle isn't constructed then assign it from default
 	if ins.bundle == nil {
-		ins.setBundle(defaultBundleConfig)
+		ins.SetBundle(defaultBundleConfig)
 	}
 
 	// if getLngHandler isn't constructed then assign it from default
@@ -48,7 +48,8 @@ func Localize(opts ...Option) gin.HandlerFunc {
 //	  },
 //	})
 func GetMessage(context *gin.Context, param interface{}) (string, error) {
-	return I18n(context).getMessage(context, param)
+	atI18n := context.Value("i18n").(GinI18n)
+	return atI18n.GetMessage(context, param)
 }
 
 // MustGetMessage get the i18n message without error handling
@@ -63,31 +64,35 @@ func GetMessage(context *gin.Context, param interface{}) (string, error) {
 //	  },
 //	})
 func MustGetMessage(context *gin.Context, param interface{}) string {
-	return I18n(context).mustGetMessage(context, param)
+	atI18n := context.MustGet("i18n").(GinI18n)
+	return atI18n.MustGetMessage(context, param)
 }
 
 // HasLang check all i18n lang exists
 // Example:
 // HasLang(context, "ZH-cn") // return false or true
 func HasLang(context *gin.Context, language string) bool {
-	return I18n(context).hasLang(language)
+	atI18n := context.MustGet("i18n").(GinI18n)
+	return atI18n.hasLang(language)
 }
 
 // GetDefaultLanguage get the default language
 // Example:
 // GetDefaultLanguage(context)
 func GetDefaultLanguage(context *gin.Context) language.Tag {
-	return I18n(context).getDefaultLanguage()
+	atI18n := context.MustGet("i18n").(GinI18n)
+	return atI18n.getDefaultLanguage()
 }
 
 // GetCurrentLanguage get the current language
 // Example:
 // GetCurrentLanguage(context)
 func GetCurrentLanguage(context *gin.Context) language.Tag {
-	return I18n(context).getCurrentLanguage(context)
+	atI18n := context.MustGet("i18n").(GinI18n)
+	return atI18n.getCurrentLanguage(context)
 }
 
 // I18n get GinI18n from gin.Context
-func I18n(ctx *gin.Context) GinI18n {
-	return ctx.Value("i18n").(GinI18n)
+func I18n(context *gin.Context) GinI18n {
+	return context.MustGet("i18n").(GinI18n)
 }
