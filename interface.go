@@ -21,7 +21,16 @@ type GinI18n interface {
 
 	// SetGetLngHandler sets the handler function to determine the language from the context.
 	SetGetLngHandler(handler GetLngHandler)
+	
+	// HasLang checks if the given language is supported by the i18n bundle.
+	// It returns true if the language is supported, false otherwise.
 	HasLang(language string) bool
+
+	// GetDefaultLanguage returns the default language tag.
+	// It returns the default language tag.
 	GetDefaultLanguage() language.Tag
+
+	// GetCurrentLanguage returns the current language tag from the context.
+	// It returns the current language tag.
 	GetCurrentLanguage(context *gin.Context) language.Tag
 }
