@@ -1,4 +1,4 @@
-// Package i18n ginI18nImpl is an implementation of the GinI18n interface, providing
+// ginI18nImpl is an implementation of the GinI18n interface, providing
 // localization support for Gin applications. It uses the go-i18n library
 // to manage and retrieve localized messages.
 //
