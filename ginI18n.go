@@ -1,3 +1,24 @@
+// ginI18nImpl is an implementation of the GinI18n interface, providing
+// localization support for Gin applications. It uses the go-i18n library
+// to manage and retrieve localized messages.
+//
+// Fields:
+// - bundle: The i18n.Bundle containing the localization messages.
+// - localizerByLng: A map of language tags to their corresponding localizers.
+// - defaultLanguage: The default language tag to use for localization.
+// - getLngHandler: A handler function to retrieve the language tag from the Gin context.
+//
+// Methods:
+// - GetMessage: Retrieves a localized message based on the provided context and parameter.
+// - MustGetMessage: Retrieves a localized message and returns an empty string if retrieval fails.
+// - SetBundle: Sets the i18n.Bundle configuration.
+// - SetGetLngHandler: Sets the handler function to retrieve the language tag from the Gin context.
+// - loadMessageFiles: Loads all localization files into the bundle.
+// - loadMessageFile: Loads a single localization file into the bundle.
+// - setLocalizerByLng: Sets the localizers for each accepted language.
+// - newLocalizer: Creates a new localizer for a given language.
+// - getLocalizerByLng: Retrieves the localizer for a given language.
+// - getLocalizeConfig: Converts the parameter into an i18n.LocalizeConfig.
 package i18n
 
 import (
@@ -10,6 +31,8 @@ import (
 	"golang.org/x/text/language"
 )
 
+// GinI18n is an interface that defines methods for internationalization (i18n) in a Gin web framework context.
+// It provides methods to get localized messages and configure the i18n bundle and language handler.
 var _ GinI18n = (*ginI18nImpl)(nil)
 
 type ginI18nImpl struct {
@@ -19,8 +42,17 @@ type ginI18nImpl struct {
 	getLngHandler   GetLngHandler
 }
 
-// getMessage get localize message by lng and messageID
-func (i *ginI18nImpl) getMessage(ctx *gin.Context, param interface{}) (string, error) {
+// GetMessage retrieves a localized message based on the provided context and parameter.
+// If the message cannot be retrieved, it returns an empty string.
+//
+// Parameters:
+//   - ctx: The Gin context from which to retrieve the message.
+//   - param: The parameter used to fetch the localized message.
+//
+// Returns:
+//   - string: The localized message or an empty string if retrieval fails.
+//   - error: An error if the message retrieval fails.
+func (i *ginI18nImpl) GetMessage(ctx *gin.Context, param interface{}) (string, error) {
 	lng := i.getLngHandler(ctx, i.defaultLanguage.String())
 	localizer := i.getLocalizerByLng(lng)
 
@@ -37,13 +69,28 @@ func (i *ginI18nImpl) getMessage(ctx *gin.Context, param interface{}) (string, e
 	return message, nil
 }
 
-// mustGetMessage ...
-func (i *ginI18nImpl) mustGetMessage(ctx *gin.Context, param interface{}) string {
-	message, _ := i.getMessage(ctx, param)
+// MustGetMessage retrieves a localized message based on the provided context and parameter.
+// If the message cannot be retrieved, it returns an empty string.
+// This method panics if the message retrieval fails.
+//
+// Parameters:
+//   - ctx: The Gin context from which to retrieve the message.
+//   - param: The parameter used to fetch the localized message.
+//
+// Returns:
+//   - string: The localized message or an empty string if retrieval fails.
+func (i *ginI18nImpl) MustGetMessage(ctx *gin.Context, param interface{}) string {
+	message, _ := i.GetMessage(ctx, param)
 	return message
 }
 
-func (i *ginI18nImpl) setBundle(cfg *BundleCfg) {
+// SetBundle initializes the i18n bundle with the provided configuration.
+// It sets the default language, registers the unmarshal function for the bundle files,
+// loads the message files, and sets the localizer based on the accepted languages.
+//
+// Parameters:
+//   - cfg: A pointer to a BundleCfg struct that contains the configuration for the bundle.
+func (i *ginI18nImpl) SetBundle(cfg *BundleCfg) {
 	bundle := i18n.NewBundle(cfg.DefaultLanguage)
 	bundle.RegisterUnmarshalFunc(cfg.FormatBundleFile, cfg.UnmarshalFunc)
 
@@ -54,7 +101,13 @@ func (i *ginI18nImpl) setBundle(cfg *BundleCfg) {
 	i.setLocalizerByLng(cfg.AcceptLanguage)
 }
 
-func (i *ginI18nImpl) setGetLngHandler(handler GetLngHandler) {
+// SetGetLngHandler sets the handler function that will be used to get the language.
+// The handler should be a function that implements the GetLngHandler interface.
+//
+// Parameters:
+//
+//	handler - a function that implements the GetLngHandler interface
+func (i *ginI18nImpl) SetGetLngHandler(handler GetLngHandler) {
 	i.getLngHandler = handler
 }
 
