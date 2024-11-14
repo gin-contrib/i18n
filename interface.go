@@ -21,7 +21,7 @@ type GinI18n interface {
 
 	// SetGetLngHandler sets the handler function to determine the language from the context.
 	SetGetLngHandler(handler GetLngHandler)
-	hasLang(language string) bool
-	getDefaultLanguage() language.Tag
-	getCurrentLanguage(context *gin.Context) language.Tag
+	HasLang(language string) bool
+	GetDefaultLanguage() language.Tag
+	GetCurrentLanguage(context *gin.Context) language.Tag
 }

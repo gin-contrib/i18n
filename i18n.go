@@ -73,7 +73,7 @@ func MustGetMessage(context *gin.Context, param interface{}) string {
 // HasLang(context, "ZH-cn") // return false or true
 func HasLang(context *gin.Context, language string) bool {
 	atI18n := context.MustGet("i18n").(GinI18n)
-	return atI18n.hasLang(language)
+	return atI18n.HasLang(language)
 }
 
 // GetDefaultLanguage get the default language
@@ -81,7 +81,7 @@ func HasLang(context *gin.Context, language string) bool {
 // GetDefaultLanguage(context)
 func GetDefaultLanguage(context *gin.Context) language.Tag {
 	atI18n := context.MustGet("i18n").(GinI18n)
-	return atI18n.getDefaultLanguage()
+	return atI18n.GetDefaultLanguage()
 }
 
 // GetCurrentLanguage get the current language
@@ -89,7 +89,7 @@ func GetDefaultLanguage(context *gin.Context) language.Tag {
 // GetCurrentLanguage(context)
 func GetCurrentLanguage(context *gin.Context) language.Tag {
 	atI18n := context.MustGet("i18n").(GinI18n)
-	return atI18n.getCurrentLanguage(context)
+	return atI18n.GetCurrentLanguage(context)
 }
 
 // I18n get GinI18n from gin.Context
