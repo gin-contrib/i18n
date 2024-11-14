@@ -2,6 +2,7 @@ package i18n
 
 import (
 	"github.com/gin-gonic/gin"
+	"golang.org/x/text/language"
 )
 
 // newI18n ...
@@ -65,4 +66,33 @@ func GetMessage(context *gin.Context, param interface{}) (string, error) {
 func MustGetMessage(context *gin.Context, param interface{}) string {
 	atI18n := context.MustGet("i18n").(GinI18n)
 	return atI18n.MustGetMessage(context, param)
+}
+
+// HasLang check all i18n lang exists
+// Example:
+// HasLang(context, "ZH-cn") // return false or true
+func HasLang(context *gin.Context, language string) bool {
+	atI18n := context.MustGet("i18n").(GinI18n)
+	return atI18n.HasLang(language)
+}
+
+// GetDefaultLanguage get the default language
+// Example:
+// GetDefaultLanguage(context)
+func GetDefaultLanguage(context *gin.Context) language.Tag {
+	atI18n := context.MustGet("i18n").(GinI18n)
+	return atI18n.GetDefaultLanguage()
+}
+
+// GetCurrentLanguage get the current language
+// Example:
+// GetCurrentLanguage(context)
+func GetCurrentLanguage(context *gin.Context) language.Tag {
+	atI18n := context.MustGet("i18n").(GinI18n)
+	return atI18n.GetCurrentLanguage(context)
+}
+
+// I18n get GinI18n from gin.Context
+func I18n(context *gin.Context) GinI18n {
+	return context.MustGet("i18n").(GinI18n)
 }

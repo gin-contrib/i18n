@@ -2,6 +2,7 @@ package i18n
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -20,13 +21,34 @@ func newServer() *gin.Engine {
 		context.String(http.StatusOK, MustGetMessage(context, "welcome"))
 	})
 
-	router.GET("/:name", func(context *gin.Context) {
+	router.GET("/messageId/:name", func(context *gin.Context) {
 		context.String(http.StatusOK, MustGetMessage(context, &i18n.LocalizeConfig{
 			MessageID: "welcomeWithName",
 			TemplateData: map[string]string{
 				"name": context.Param("name"),
 			},
 		}))
+	})
+
+	router.GET("/messageType/:name", func(context *gin.Context) {
+		context.String(http.StatusOK, MustGetMessage(context, &i18n.LocalizeConfig{
+			DefaultMessage: &i18n.Message{
+				ID: "welcomeWithName",
+			},
+			TemplateData: map[string]string{
+				"name": context.Param("name"),
+			},
+		}))
+	})
+
+	router.GET("/exist/:lang", func(context *gin.Context) {
+		context.String(http.StatusOK, "%v", HasLang(context, context.Param("lang")))
+	})
+	router.GET("/lang/default", func(context *gin.Context) {
+		context.String(http.StatusOK, "%s", GetDefaultLanguage(context).String())
+	})
+	router.GET("/lang/current", func(context *gin.Context) {
+		context.String(http.StatusOK, "%s", GetCurrentLanguage(context).String())
 	})
 	router.GET("/age/:age", func(context *gin.Context) {
 		context.String(http.StatusOK, MustGetMessage(context, i18n.LocalizeConfig{
@@ -75,9 +97,17 @@ func TestI18nEN(t *testing.T) {
 			want: "hello",
 		},
 		{
-			name: "hello alex",
+			name: "hello alex - messageId",
 			args: args{
-				path: "/alex",
+				path: "/messageId/alex",
+				lng:  language.English,
+			},
+			want: "hello alex",
+		},
+		{
+			name: "hello alex - messageType",
+			args: args{
+				path: "/messageType/alex",
 				lng:  language.English,
 			},
 			want: "hello alex",
@@ -100,9 +130,17 @@ func TestI18nEN(t *testing.T) {
 			want: "hallo",
 		},
 		{
-			name: "hallo alex",
+			name: "hallo alex - messageId",
 			args: args{
-				path: "/alex",
+				path: "/messageId/alex",
+				lng:  language.German,
+			},
+			want: "hallo alex",
+		},
+		{
+			name: "hallo alex - messageType",
+			args: args{
+				path: "/messageType/alex",
 				lng:  language.German,
 			},
 			want: "hallo alex",
@@ -125,9 +163,17 @@ func TestI18nEN(t *testing.T) {
 			want: "bonjour",
 		},
 		{
-			name: "bonjour alex",
+			name: "bonjour alex - messageId",
 			args: args{
-				path: "/alex",
+				path: "/messageId/alex",
+				lng:  language.French,
+			},
+			want: "bonjour alex",
+		},
+		{
+			name: "bonjour alex - messageType",
+			args: args{
+				path: "/messageType/alex",
 				lng:  language.French,
 			},
 			want: "bonjour alex",
@@ -139,6 +185,57 @@ func TestI18nEN(t *testing.T) {
 				lng:  language.French,
 			},
 			want: "j'ai 18 ans",
+		},
+		// has exist
+		{
+			name: "i81n lang exist",
+			args: args{
+				path: fmt.Sprintf("/exist/%s", language.English.String()),
+				lng:  language.English,
+			},
+			want: "true",
+		},
+		{
+			name: "i81n lang not exist",
+			args: args{
+				path: fmt.Sprintf("/exist/%s", language.SimplifiedChinese.String()),
+				lng:  language.English,
+			},
+			want: "false",
+		},
+		// default lang
+		{
+			name: "i81n is default " + language.English.String(),
+			args: args{
+				path: "/lang/default",
+				lng:  language.English,
+			},
+			want: language.English.String(),
+		},
+		{
+			name: "i81n is not default " + language.German.String(),
+			args: args{
+				path: "/lang/default",
+				lng:  language.German,
+			},
+			want: language.English.String(),
+		},
+		// current lang
+		{
+			name: "i81n is current " + language.English.String(),
+			args: args{
+				path: "/lang/current",
+				lng:  language.English,
+			},
+			want: language.English.String(),
+		},
+		{
+			name: "i81n is not current " + language.English.String(),
+			args: args{
+				path: "/lang/current",
+				lng:  language.German,
+			},
+			want: language.German.String(),
 		},
 	}
 	for _, tt := range tests {

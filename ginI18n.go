@@ -1,4 +1,4 @@
-// ginI18nImpl is an implementation of the GinI18n interface, providing
+// Package i18n ginI18nImpl is an implementation of the GinI18n interface, providing
 // localization support for Gin applications. It uses the go-i18n library
 // to manage and retrieve localized messages.
 //
@@ -11,6 +11,9 @@
 // Methods:
 // - GetMessage: Retrieves a localized message based on the provided context and parameter.
 // - MustGetMessage: Retrieves a localized message and returns an empty string if retrieval fails.
+// - HasLang: Checks if a specific language is supported.
+// - GetCurrentLanguage: Retrieves the current language based on the Gin context..
+// - GetDefaultLanguage: Retrieves the default language
 // - SetBundle: Sets the i18n.Bundle configuration.
 // - SetGetLngHandler: Sets the handler function to retrieve the language tag from the Gin context.
 // - loadMessageFiles: Loads all localization files into the bundle.
@@ -40,6 +43,55 @@ type ginI18nImpl struct {
 	localizerByLng  map[string]*i18n.Localizer
 	defaultLanguage language.Tag
 	getLngHandler   GetLngHandler
+}
+
+// GetDefaultLanguage retrieves the default language tag for the application.
+//
+// This method returns the default language tag that is used when no specific
+// language is specified by the client or in the context.
+//
+// Parameters:
+//   - ctx: The Gin context from which to retrieve the message.
+//
+// Returns:
+//   - language.Tag: The default language tag.
+func (i *ginI18nImpl) GetDefaultLanguage() language.Tag {
+	return i.defaultLanguage
+}
+
+// GetCurrentLanguage retrieves the current language tag from the Gin context.
+//
+// This method extracts the language tag from the Gin context using the provided
+// `getLngHandler` function. It uses this handler to obtain the language tag for
+// the current request. If the language is not provided, it returns the default language.
+//
+// Parameters:
+//   - ctx: The Gin context from which to retrieve the message.
+//
+// Returns:
+//   - language.Tag: The language tag based on the context (either the specified language or the default language).
+func (i *ginI18nImpl) GetCurrentLanguage(context *gin.Context) language.Tag {
+	return language.Make(i.getLngHandler(context, i.defaultLanguage.String()))
+}
+
+// HasLang checks whether the specified language is supported by the application.
+//
+// This method checks if a language tag is available in the localizer map (`localizerByLng`),
+// which stores localizers for all supported languages. If the language is supported,
+// it returns `true`; otherwise, it returns `false`.
+//
+// Parameters:
+//   - ctx: The Gin context from which to retrieve the message.
+//   - language (string): The language tag (e.g., "en", "zh") to check.
+//
+// Returns:
+//   - bool: `true` if the language is supported, otherwise `false`.
+func (i *ginI18nImpl) HasLang(language string) bool {
+	if _, exist := i.localizerByLng[language]; exist {
+		return true
+	}
+
+	return false
 }
 
 // GetMessage retrieves a localized message based on the provided context and parameter.
@@ -181,6 +233,16 @@ func (i *ginI18nImpl) getLocalizeConfig(param interface{}) (*i18n.LocalizeConfig
 	case string:
 		localizeConfig := &i18n.LocalizeConfig{
 			MessageID: paramValue,
+		}
+		return localizeConfig, nil
+	case *i18n.Message:
+		localizeConfig := &i18n.LocalizeConfig{
+			DefaultMessage: paramValue,
+		}
+		return localizeConfig, nil
+	case i18n.Message:
+		localizeConfig := &i18n.LocalizeConfig{
+			DefaultMessage: &paramValue,
 		}
 		return localizeConfig, nil
 	case *i18n.LocalizeConfig:
