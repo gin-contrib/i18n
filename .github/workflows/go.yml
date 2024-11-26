@@ -24,6 +24,12 @@ jobs:
         uses: golangci/golangci-lint-action@v6
         with:
           args: --verbose
+
+      - name: Bearer
+        uses: bearer/bearer-action@v2
+        with:
+          diff: true
+
   test:
     strategy:
       matrix:
