@@ -4,7 +4,7 @@ go 1.21.0
 
 require (
 	github.com/gin-gonic/gin v1.10.0
-	github.com/nicksnyder/go-i18n/v2 v2.4.1
+	github.com/nicksnyder/go-i18n/v2 v2.5.0
 	golang.org/x/text v0.21.0
 	gopkg.in/yaml.v3 v3.0.1
 )
