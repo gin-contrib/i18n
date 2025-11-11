@@ -1,6 +1,7 @@
 # i18n
 
 [![Run Tests](https://github.com/gin-contrib/i18n/actions/workflows/go.yml/badge.svg)](https://github.com/gin-contrib/i18n/actions/workflows/go.yml)
+[![Trivy Security Scan](https://github.com/gin-contrib/i18n/actions/workflows/trivy-scan.yml/badge.svg)](https://github.com/gin-contrib/i18n/actions/workflows/trivy-scan.yml)
 [![CodeQL](https://github.com/gin-contrib/i18n/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/gin-contrib/i18n/actions/workflows/codeql-analysis.yml)
 [![codecov](https://codecov.io/gh/gin-contrib/i18n/branch/master/graph/badge.svg?token=QNMN3KM28Y)](https://codecov.io/gh/gin-contrib/i18n)
 [![GoDoc](https://godoc.org/github.com/gin-contrib/i18n?status.svg)](https://godoc.org/github.com/gin-contrib/i18n)
