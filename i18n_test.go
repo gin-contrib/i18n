@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"golang.org/x/text/language"
+	"gopkg.in/yaml.v3"
 )
 
 // newServer ...
@@ -242,6 +243,143 @@ func TestI18nEN(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := makeRequest(tt.args.lng, tt.args.path); got != tt.want {
 				t.Errorf("makeRequest() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+// newFallbackServer creates a server with FallbackLanguages configured.
+// Fallback chain: fr -> en (French first, then English).
+// Test data:
+//   - en.yaml: welcome, welcomeWithName, welcomeWithAge, englishOnly
+//   - de.yaml: welcome, welcomeWithName
+//   - fr.yaml: welcome, welcomeWithName, welcomeWithAge
+//   - zh.yaml: welcome
+func newFallbackServer() *gin.Engine {
+	router := gin.New()
+	router.Use(Localize(WithBundle(&BundleCfg{
+		RootPath:          "./testdata/localizeFallback",
+		AcceptLanguage:    []language.Tag{language.English, language.German, language.French, language.Chinese},
+		FallbackLanguages: []language.Tag{language.French, language.English},
+		DefaultLanguage:   language.English,
+		FormatBundleFile:  "yaml",
+		UnmarshalFunc:     yaml.Unmarshal,
+	})))
+
+	router.GET("/", func(ctx *gin.Context) {
+		ctx.String(http.StatusOK, MustGetMessage(ctx, "welcome"))
+	})
+
+	router.GET("/messageId/:name", func(ctx *gin.Context) {
+		ctx.String(http.StatusOK, MustGetMessage(ctx, &i18n.LocalizeConfig{
+			MessageID: "welcomeWithName",
+			TemplateData: map[string]string{
+				"name": ctx.Param("name"),
+			},
+		}))
+	})
+
+	router.GET("/age/:age", func(ctx *gin.Context) {
+		ctx.String(http.StatusOK, MustGetMessage(ctx, i18n.LocalizeConfig{
+			MessageID: "welcomeWithAge",
+			TemplateData: map[string]string{
+				"age": ctx.Param("age"),
+			},
+		}))
+	})
+
+	router.GET("/englishOnly", func(ctx *gin.Context) {
+		ctx.String(http.StatusOK, MustGetMessage(ctx, "englishOnly"))
+	})
+
+	return router
+}
+
+func makeFallbackRequest(lng language.Tag, path string) string {
+	req, _ := http.NewRequestWithContext(context.Background(), "GET", path, nil)
+	req.Header.Add("Accept-Language", lng.String())
+	w := httptest.NewRecorder()
+	r := newFallbackServer()
+	r.ServeHTTP(w, req)
+	return w.Body.String()
+}
+
+func TestFallbackLocale(t *testing.T) {
+	type args struct {
+		lng  language.Tag
+		path string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		// Key exists in target language -> returns target (no fallback needed)
+		{
+			name: "de has welcome",
+			args: args{lng: language.German, path: "/"},
+			want: "hallo",
+		},
+		{
+			name: "fr has welcome",
+			args: args{lng: language.French, path: "/"},
+			want: "bonjour",
+		},
+		{
+			name: "zh has welcome",
+			args: args{lng: language.Chinese, path: "/"},
+			want: "你好",
+		},
+		{
+			name: "en has welcome",
+			args: args{lng: language.English, path: "/"},
+			want: "hello",
+		},
+		// Key missing in target -> fallback to French (first in chain)
+		{
+			name: "de missing welcomeWithAge falls back to fr",
+			args: args{lng: language.German, path: "/age/18"},
+			want: "j'ai 18 ans",
+		},
+		// Key missing in target and French -> fallback to English (second in chain)
+		{
+			name: "de missing englishOnly falls back to en",
+			args: args{lng: language.German, path: "/englishOnly"},
+			want: "this is english only",
+		},
+		{
+			name: "fr missing englishOnly falls back to en",
+			args: args{lng: language.French, path: "/englishOnly"},
+			want: "this is english only",
+		},
+		// Multi-step: zh missing welcomeWithAge -> not in zh, try fr (has it) -> returns French
+		{
+			name: "zh missing welcomeWithAge falls back to fr",
+			args: args{lng: language.Chinese, path: "/age/25"},
+			want: "j'ai 25 ans",
+		},
+		// Multi-step: zh missing englishOnly -> not in zh, not in fr, try en -> returns English
+		{
+			name: "zh missing englishOnly falls back to en",
+			args: args{lng: language.Chinese, path: "/englishOnly"},
+			want: "this is english only",
+		},
+		// Key exists in target with template data -> no fallback
+		{
+			name: "de has welcomeWithName",
+			args: args{lng: language.German, path: "/messageId/alex"},
+			want: "hallo alex",
+		},
+		{
+			name: "zh missing welcomeWithName falls back to fr",
+			args: args{lng: language.Chinese, path: "/messageId/alex"},
+			want: "bonjour alex",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := makeFallbackRequest(tt.args.lng, tt.args.path); got != tt.want {
+				t.Errorf("makeFallbackRequest() = %v, want %v", got, tt.want)
 			}
 		})
 	}
