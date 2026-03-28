@@ -7,12 +7,13 @@ import (
 
 // BundleCfg represents the configuration options for an i18n bundle.
 type BundleCfg struct {
-	DefaultLanguage  language.Tag       // DefaultLanguage specifies the default language for the bundle.
-	FormatBundleFile string             // FormatBundleFile specifies the file format for the bundle.
-	AcceptLanguage   []language.Tag     // AcceptLanguage specifies the accepted languages for the bundle.
-	RootPath         string             // RootPath specifies the root path for the bundle.
-	UnmarshalFunc    i18n.UnmarshalFunc // UnmarshalFunc specifies the function used for unmarshaling bundle files.
-	Loader           Loader             // Loader specifies the loader for loading bundle files.
+	DefaultLanguage   language.Tag       // DefaultLanguage specifies the default language for the bundle.
+	FormatBundleFile  string             // FormatBundleFile specifies the file format for the bundle.
+	AcceptLanguage    []language.Tag     // AcceptLanguage specifies the accepted languages for the bundle.
+	FallbackLanguages []language.Tag     // FallbackLanguages specifies fallback languages when a translation is missing.
+	RootPath          string             // RootPath specifies the root path for the bundle.
+	UnmarshalFunc     i18n.UnmarshalFunc // UnmarshalFunc specifies the function used for unmarshaling bundle files.
+	Loader            Loader             // Loader specifies the loader for loading bundle files.
 }
 
 type Loader interface {

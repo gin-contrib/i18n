@@ -28,6 +28,7 @@ import (
 	"errors"
 	"fmt"
 	"path"
+	"slices"
 
 	"github.com/gin-gonic/gin"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
@@ -39,10 +40,11 @@ import (
 var _ GinI18n = (*ginI18nImpl)(nil)
 
 type ginI18nImpl struct {
-	bundle          *i18n.Bundle
-	localizerByLng  map[string]*i18n.Localizer
-	defaultLanguage language.Tag
-	getLngHandler   GetLngHandler
+	bundle            *i18n.Bundle
+	localizerByLng    map[string]*i18n.Localizer
+	defaultLanguage   language.Tag
+	fallbackLanguages []language.Tag
+	getLngHandler     GetLngHandler
 }
 
 // GetDefaultLanguage retrieves the default language tag for the application.
@@ -114,11 +116,27 @@ func (i *ginI18nImpl) GetMessage(ctx *gin.Context, param interface{}) (string, e
 	}
 
 	message, err := localizer.Localize(localizeConfig)
-	if err != nil {
-		return "", err
+	if err == nil {
+		return message, nil
 	}
 
-	return message, nil
+	// Try fallback languages in order
+	for _, fbLang := range i.fallbackLanguages {
+		fbStr := fbLang.String()
+		if fbStr == lng {
+			continue
+		}
+		fbLocalizer := i.getLocalizerByLng(fbStr)
+		if fbLocalizer == localizer {
+			continue
+		}
+		message, fbErr := fbLocalizer.Localize(localizeConfig)
+		if fbErr == nil {
+			return message, nil
+		}
+	}
+
+	return "", err
 }
 
 // MustGetMessage retrieves a localized message based on the provided context and parameter.
@@ -148,6 +166,7 @@ func (i *ginI18nImpl) SetBundle(cfg *BundleCfg) {
 
 	i.bundle = bundle
 	i.defaultLanguage = cfg.DefaultLanguage
+	i.fallbackLanguages = cfg.FallbackLanguages
 
 	i.loadMessageFiles(cfg)
 	i.setLocalizerByLng(cfg.AcceptLanguage)
@@ -193,6 +212,14 @@ func (i *ginI18nImpl) setLocalizerByLng(acceptLanguage []language.Tag) {
 		i.localizerByLng[lngStr] = i.newLocalizer(lngStr)
 	}
 
+	// ensure localizers exist for fallback languages
+	for _, lng := range i.fallbackLanguages {
+		lngStr := lng.String()
+		if _, exists := i.localizerByLng[lngStr]; !exists {
+			i.localizerByLng[lngStr] = i.newLocalizer(lngStr)
+		}
+	}
+
 	// set defaultLanguage if it isn't exist
 	defaultLng := i.defaultLanguage.String()
 	if _, hasDefaultLng := i.localizerByLng[defaultLng]; !hasDefaultLng {
@@ -203,19 +230,20 @@ func (i *ginI18nImpl) setLocalizerByLng(acceptLanguage []language.Tag) {
 // newLocalizer create a localizer by language
 func (i *ginI18nImpl) newLocalizer(lng string) *i18n.Localizer {
 	lngDefault := i.defaultLanguage.String()
-	lngs := []string{
-		lng,
+	lngs := []string{lng}
+
+	for _, fb := range i.fallbackLanguages {
+		fbStr := fb.String()
+		if fbStr != lng {
+			lngs = append(lngs, fbStr)
+		}
 	}
 
-	if lng != lngDefault {
+	if lng != lngDefault && !slices.Contains(lngs, lngDefault) {
 		lngs = append(lngs, lngDefault)
 	}
 
-	localizer := i18n.NewLocalizer(
-		i.bundle,
-		lngs...,
-	)
-	return localizer
+	return i18n.NewLocalizer(i.bundle, lngs...)
 }
 
 // getLocalizerByLng get localizer by language
