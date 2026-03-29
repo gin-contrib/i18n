@@ -161,6 +161,83 @@ func main() {
 }
 ```
 
+Fallback Locale
+
+When a translation key is missing in the requested language, the middleware tries each fallback language in order before returning an error.
+
+```go
+package main
+
+import (
+  "log"
+  "net/http"
+
+  ginI18n "github.com/gin-contrib/i18n"
+  "github.com/gin-gonic/gin"
+  "github.com/nicksnyder/go-i18n/v2/i18n"
+  "golang.org/x/text/language"
+  "gopkg.in/yaml.v3"
+)
+
+func main() {
+  // new gin engine
+  gin.SetMode(gin.ReleaseMode)
+  router := gin.New()
+
+  // apply i18n middleware with fallback locale support
+  router.Use(ginI18n.Localize(ginI18n.WithBundle(&ginI18n.BundleCfg{
+    RootPath:          "./testdata/localizeFallback",
+    AcceptLanguage:    []language.Tag{language.English, language.German, language.French, language.Chinese},
+    FallbackLanguages: []language.Tag{language.French, language.English},
+    DefaultLanguage:   language.English,
+    FormatBundleFile:  "yaml",
+    UnmarshalFunc:     yaml.Unmarshal,
+  })))
+
+  router.GET("/", func(ctx *gin.Context) {
+    ctx.String(http.StatusOK, ginI18n.MustGetMessage(ctx, "welcome"))
+  })
+
+  router.GET("/messageId/:name", func(context *gin.Context) {
+    context.String(http.StatusOK, ginI18n.MustGetMessage(context, &i18n.LocalizeConfig{
+      MessageID: "welcomeWithName",
+      TemplateData: map[string]string{
+        "name": context.Param("name"),
+      },
+    }))
+  })
+
+  router.GET("/messageType/:name", func(context *gin.Context) {
+    context.String(http.StatusOK, ginI18n.MustGetMessage(context, &i18n.LocalizeConfig{
+      DefaultMessage: &i18n.Message{
+        ID: "welcomeWithName",
+      },
+      TemplateData: map[string]string{
+        "name": context.Param("name"),
+      },
+    }))
+  })
+
+  router.GET("/exist/:lang", func(ctx *gin.Context) {
+    ctx.String(http.StatusOK, "%v", ginI18n.HasLang(ctx, ctx.Param("lang")))
+  })
+
+  // get the default and current language
+  router.GET("/lang/default", func(context *gin.Context) {
+    context.String(http.StatusOK, "%s", ginI18n.GetDefaultLanguage(context).String())
+  })
+
+  // get the current language
+  router.GET("/lang/current", func(context *gin.Context) {
+    context.String(http.StatusOK, "%s", ginI18n.GetCurrentLanguage(context).String())
+  })
+
+  if err := router.Run(":8080"); err != nil {
+    log.Fatal(err)
+  }
+}
+```
+
 Customized Get Language Handler
 
 ```go
