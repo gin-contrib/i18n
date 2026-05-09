@@ -24,9 +24,9 @@ func newServer() *gin.Engine {
 
 	router.GET("/messageId/:name", func(context *gin.Context) {
 		context.String(http.StatusOK, MustGetMessage(context, &i18n.LocalizeConfig{
-			MessageID: "welcomeWithName",
+			MessageID: msgIDWelcomeName,
 			TemplateData: map[string]string{
-				"name": context.Param("name"),
+				keyName: context.Param(keyName),
 			},
 		}))
 	})
@@ -34,10 +34,10 @@ func newServer() *gin.Engine {
 	router.GET("/messageType/:name", func(context *gin.Context) {
 		context.String(http.StatusOK, MustGetMessage(context, &i18n.LocalizeConfig{
 			DefaultMessage: &i18n.Message{
-				ID: "welcomeWithName",
+				ID: msgIDWelcomeName,
 			},
 			TemplateData: map[string]string{
-				"name": context.Param("name"),
+				keyName: context.Param(keyName),
 			},
 		}))
 	})
@@ -95,28 +95,28 @@ func TestI18nEN(t *testing.T) {
 				path: "/",
 				lng:  language.English,
 			},
-			want: "hello",
+			want: wantHello,
 		},
 		{
 			name: "hello alex - messageId",
 			args: args{
-				path: "/messageId/alex",
+				path: pathMessageIDAlex,
 				lng:  language.English,
 			},
-			want: "hello alex",
+			want: wantHelloAlex,
 		},
 		{
 			name: "hello alex - messageType",
 			args: args{
-				path: "/messageType/alex",
+				path: pathMessageTypAlex,
 				lng:  language.English,
 			},
-			want: "hello alex",
+			want: wantHelloAlex,
 		},
 		{
 			name: "18 years old",
 			args: args{
-				path: "/age/18",
+				path: pathAge18,
 				lng:  language.English,
 			},
 			want: "I am 18 years old",
@@ -128,28 +128,28 @@ func TestI18nEN(t *testing.T) {
 				path: "/",
 				lng:  language.German,
 			},
-			want: "hallo",
+			want: wantHallo,
 		},
 		{
 			name: "hallo alex - messageId",
 			args: args{
-				path: "/messageId/alex",
+				path: pathMessageIDAlex,
 				lng:  language.German,
 			},
-			want: "hallo alex",
+			want: wantHalloAlex,
 		},
 		{
 			name: "hallo alex - messageType",
 			args: args{
-				path: "/messageType/alex",
+				path: pathMessageTypAlex,
 				lng:  language.German,
 			},
-			want: "hallo alex",
+			want: wantHalloAlex,
 		},
 		{
 			name: "18 jahre alt",
 			args: args{
-				path: "/age/18",
+				path: pathAge18,
 				lng:  language.German,
 			},
 			want: "ich bin 18 Jahre alt",
@@ -161,28 +161,28 @@ func TestI18nEN(t *testing.T) {
 				path: "/",
 				lng:  language.French,
 			},
-			want: "bonjour",
+			want: wantBonjour,
 		},
 		{
 			name: "bonjour alex - messageId",
 			args: args{
-				path: "/messageId/alex",
+				path: pathMessageIDAlex,
 				lng:  language.French,
 			},
-			want: "bonjour alex",
+			want: wantBonjourAlex,
 		},
 		{
 			name: "bonjour alex - messageType",
 			args: args{
-				path: "/messageType/alex",
+				path: pathMessageTypAlex,
 				lng:  language.French,
 			},
-			want: "bonjour alex",
+			want: wantBonjourAlex,
 		},
 		{
 			name: "18 ans",
 			args: args{
-				path: "/age/18",
+				path: pathAge18,
 				lng:  language.French,
 			},
 			want: "j'ai 18 ans",
@@ -288,7 +288,7 @@ func newFallbackServer() *gin.Engine {
 		}))
 	})
 
-	router.GET("/englishOnly", func(ctx *gin.Context) {
+	router.GET(pathEnglishOnly, func(ctx *gin.Context) {
 		ctx.String(http.StatusOK, MustGetMessage(ctx, "englishOnly"))
 	})
 
@@ -318,12 +318,12 @@ func TestFallbackLocale(t *testing.T) {
 		{
 			name: "de has welcome",
 			args: args{lng: language.German, path: "/"},
-			want: "hallo",
+			want: wantHallo,
 		},
 		{
 			name: "fr has welcome",
 			args: args{lng: language.French, path: "/"},
-			want: "bonjour",
+			want: wantBonjour,
 		},
 		{
 			name: "zh has welcome",
@@ -333,7 +333,7 @@ func TestFallbackLocale(t *testing.T) {
 		{
 			name: "en has welcome",
 			args: args{lng: language.English, path: "/"},
-			want: "hello",
+			want: wantHello,
 		},
 		// Key missing in target -> fallback to French (first in chain)
 		{
@@ -344,13 +344,13 @@ func TestFallbackLocale(t *testing.T) {
 		// Key missing in target and French -> fallback to English (second in chain)
 		{
 			name: "de missing englishOnly falls back to en",
-			args: args{lng: language.German, path: "/englishOnly"},
-			want: "this is english only",
+			args: args{lng: language.German, path: pathEnglishOnly},
+			want: wantEnglishOnly,
 		},
 		{
 			name: "fr missing englishOnly falls back to en",
-			args: args{lng: language.French, path: "/englishOnly"},
-			want: "this is english only",
+			args: args{lng: language.French, path: pathEnglishOnly},
+			want: wantEnglishOnly,
 		},
 		// Multi-step: zh missing welcomeWithAge -> not in zh, try fr (has it) -> returns French
 		{
@@ -361,19 +361,19 @@ func TestFallbackLocale(t *testing.T) {
 		// Multi-step: zh missing englishOnly -> not in zh, not in fr, try en -> returns English
 		{
 			name: "zh missing englishOnly falls back to en",
-			args: args{lng: language.Chinese, path: "/englishOnly"},
-			want: "this is english only",
+			args: args{lng: language.Chinese, path: pathEnglishOnly},
+			want: wantEnglishOnly,
 		},
 		// Key exists in target with template data -> no fallback
 		{
 			name: "de has welcomeWithName",
 			args: args{lng: language.German, path: "/messageId/alex"},
-			want: "hallo alex",
+			want: wantHalloAlex,
 		},
 		{
 			name: "zh missing welcomeWithName falls back to fr",
 			args: args{lng: language.Chinese, path: "/messageId/alex"},
-			want: "bonjour alex",
+			want: wantBonjourAlex,
 		},
 	}
 	for _, tt := range tests {

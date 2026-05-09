@@ -29,9 +29,9 @@ func newEmbedServer(middleware ...gin.HandlerFunc) *server {
 
 	server.GET("/:name", func(context *gin.Context) {
 		context.String(http.StatusOK, MustGetMessage(context, &i18n.LocalizeConfig{
-			MessageID: "welcomeWithName",
+			MessageID: msgIDWelcomeName,
 			TemplateData: map[string]string{
-				"name": context.Param("name"),
+				keyName: context.Param(keyName),
 			},
 		}))
 	})
@@ -83,7 +83,7 @@ func TestEmbedLoader(t *testing.T) {
 				name: "",
 				lng:  language.English,
 			},
-			want: "hello",
+			want: wantHello,
 		},
 		{
 			name: "hello alex",
@@ -99,7 +99,7 @@ func TestEmbedLoader(t *testing.T) {
 				name: "alex",
 				lng:  language.English,
 			},
-			want: "hello alex",
+			want: wantHelloAlex,
 		},
 		{
 			name: "hello alex german",
