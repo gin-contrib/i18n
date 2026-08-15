@@ -5,7 +5,6 @@
 [![CodeQL](https://github.com/gin-contrib/i18n/actions/workflows/codeql.yml/badge.svg)](https://github.com/gin-contrib/i18n/actions/workflows/codeql.yml)
 [![codecov](https://codecov.io/gh/gin-contrib/i18n/branch/master/graph/badge.svg?token=QNMN3KM28Y)](https://codecov.io/gh/gin-contrib/i18n)
 [![GoDoc](https://pkg.go.dev/badge/github.com/gin-contrib/i18n)](https://pkg.go.dev/github.com/gin-contrib/i18n)
-[![Go Report Card](https://goreportcard.com/badge/github.com/gin-contrib/i18n)](https://goreportcard.com/report/github.com/gin-contrib/i18n)
 
 ## Usage
 
