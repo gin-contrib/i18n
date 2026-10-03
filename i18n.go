@@ -47,7 +47,7 @@ func Localize(opts ...Option) gin.HandlerFunc {
 //	    "name": context.Param("name"),
 //	  },
 //	})
-func GetMessage(context *gin.Context, param interface{}) (string, error) {
+func GetMessage(context *gin.Context, param any) (string, error) {
 	atI18n := context.Value("i18n").(GinI18n)
 	return atI18n.GetMessage(context, param)
 }
@@ -63,7 +63,7 @@ func GetMessage(context *gin.Context, param interface{}) (string, error) {
 //	    "name": context.Param("name"),
 //	  },
 //	})
-func MustGetMessage(context *gin.Context, param interface{}) string {
+func MustGetMessage(context *gin.Context, param any) string {
 	atI18n := context.MustGet("i18n").(GinI18n)
 	return atI18n.MustGetMessage(context, param)
 }

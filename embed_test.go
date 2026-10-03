@@ -42,7 +42,7 @@ func newEmbedServer(middleware ...gin.HandlerFunc) *server {
 func (s *server) request(lng language.Tag, name string) string {
 	path := "/" + name
 	ctx := context.Background()
-	req, _ := http.NewRequestWithContext(ctx, "GET", path, nil)
+	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, path, nil)
 	req.Header.Add("Accept-Language", lng.String())
 
 	w := httptest.NewRecorder()
