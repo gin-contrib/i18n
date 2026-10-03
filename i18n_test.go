@@ -2,7 +2,6 @@ package i18n
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -68,7 +67,7 @@ func makeRequest(
 	lng language.Tag,
 	path string,
 ) string {
-	req, _ := http.NewRequestWithContext(context.Background(), "GET", path, nil)
+	req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, path, nil)
 	req.Header.Add("Accept-Language", lng.String())
 
 	// Perform the request
@@ -191,7 +190,7 @@ func TestI18nEN(t *testing.T) {
 		{
 			name: "i81n lang exist",
 			args: args{
-				path: fmt.Sprintf("/exist/%s", language.English.String()),
+				path: "/exist/" + language.English.String(),
 				lng:  language.English,
 			},
 			want: "true",
@@ -199,7 +198,7 @@ func TestI18nEN(t *testing.T) {
 		{
 			name: "i81n lang not exist",
 			args: args{
-				path: fmt.Sprintf("/exist/%s", language.SimplifiedChinese.String()),
+				path: "/exist/" + language.SimplifiedChinese.String(),
 				lng:  language.English,
 			},
 			want: "false",
@@ -258,8 +257,13 @@ func TestI18nEN(t *testing.T) {
 func newFallbackServer() *gin.Engine {
 	router := gin.New()
 	router.Use(Localize(WithBundle(&BundleCfg{
-		RootPath:          "./testdata/localizeFallback",
-		AcceptLanguage:    []language.Tag{language.English, language.German, language.French, language.Chinese},
+		RootPath: "./testdata/localizeFallback",
+		AcceptLanguage: []language.Tag{
+			language.English,
+			language.German,
+			language.French,
+			language.Chinese,
+		},
 		FallbackLanguages: []language.Tag{language.French, language.English},
 		DefaultLanguage:   language.English,
 		FormatBundleFile:  "yaml",
@@ -296,7 +300,7 @@ func newFallbackServer() *gin.Engine {
 }
 
 func makeFallbackRequest(lng language.Tag, path string) string {
-	req, _ := http.NewRequestWithContext(context.Background(), "GET", path, nil)
+	req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, path, nil)
 	req.Header.Add("Accept-Language", lng.String())
 	w := httptest.NewRecorder()
 	r := newFallbackServer()

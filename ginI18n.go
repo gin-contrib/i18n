@@ -106,7 +106,7 @@ func (i *ginI18nImpl) HasLang(language string) bool {
 // Returns:
 //   - string: The localized message or an empty string if retrieval fails.
 //   - error: An error if the message retrieval fails.
-func (i *ginI18nImpl) GetMessage(ctx *gin.Context, param interface{}) (string, error) {
+func (i *ginI18nImpl) GetMessage(ctx *gin.Context, param any) (string, error) {
 	lng := i.getLngHandler(ctx, i.defaultLanguage.String())
 	localizer := i.getLocalizerByLng(lng)
 
@@ -149,7 +149,7 @@ func (i *ginI18nImpl) GetMessage(ctx *gin.Context, param interface{}) (string, e
 //
 // Returns:
 //   - string: The localized message or an empty string if retrieval fails.
-func (i *ginI18nImpl) MustGetMessage(ctx *gin.Context, param interface{}) string {
+func (i *ginI18nImpl) MustGetMessage(ctx *gin.Context, param any) string {
 	message, _ := i.GetMessage(ctx, param)
 	return message
 }
@@ -256,7 +256,7 @@ func (i *ginI18nImpl) getLocalizerByLng(lng string) *i18n.Localizer {
 	return i.localizerByLng[i.defaultLanguage.String()]
 }
 
-func (i *ginI18nImpl) getLocalizeConfig(param interface{}) (*i18n.LocalizeConfig, error) {
+func (i *ginI18nImpl) getLocalizeConfig(param any) (*i18n.LocalizeConfig, error) {
 	switch paramValue := param.(type) {
 	case string:
 		localizeConfig := &i18n.LocalizeConfig{

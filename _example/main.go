@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	ginI18n "github.com/gin-contrib/i18n"
+
 	"github.com/gin-gonic/gin"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"golang.org/x/text/language"
@@ -46,7 +47,8 @@ func main() {
 				TemplateData: map[string]string{
 					"name": ctx.Param("name"),
 				},
-			}))
+			},
+		))
 	})
 
 	if err := router.Run(":8080"); err != nil {

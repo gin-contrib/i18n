@@ -10,11 +10,11 @@ import (
 type GinI18n interface {
 	// GetMessage retrieves a localized message based on the provided context and parameter.
 	// It returns the localized message as a string and an error if the message could not be retrieved.
-	GetMessage(context *gin.Context, param interface{}) (string, error)
+	GetMessage(context *gin.Context, param any) (string, error)
 
 	// MustGetMessage retrieves a localized message based on the provided context and parameter.
 	// It returns the localized message as a string and panics if the message could not be retrieved.
-	MustGetMessage(context *gin.Context, param interface{}) string
+	MustGetMessage(context *gin.Context, param any) string
 
 	// SetBundle sets the i18n bundle configuration.
 	SetBundle(cfg *BundleCfg)
