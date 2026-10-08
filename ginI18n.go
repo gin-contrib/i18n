@@ -41,6 +41,7 @@ var _ GinI18n = (*ginI18nImpl)(nil)
 
 type ginI18nImpl struct {
 	bundle            *i18n.Bundle
+	matcher           language.Matcher
 	localizerByLng    map[string]*i18n.Localizer
 	defaultLanguage   language.Tag
 	fallbackLanguages []language.Tag
@@ -169,6 +170,7 @@ func (i *ginI18nImpl) SetBundle(cfg *BundleCfg) {
 	i.fallbackLanguages = cfg.FallbackLanguages
 
 	i.loadMessageFiles(cfg)
+	i.matcher = language.NewMatcher(bundle.LanguageTags())
 	i.setLocalizerByLng(cfg.AcceptLanguage)
 }
 
@@ -253,7 +255,8 @@ func (i *ginI18nImpl) getLocalizerByLng(lng string) *i18n.Localizer {
 		return localizer
 	}
 
-	return i.localizerByLng[i.defaultLanguage.String()]
+	_, index := language.MatchStrings(i.matcher, lng)
+	return i.localizerByLng[i.bundle.LanguageTags()[index].String()]
 }
 
 func (i *ginI18nImpl) getLocalizeConfig(param any) (*i18n.LocalizeConfig, error) {
