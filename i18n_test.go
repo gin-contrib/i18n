@@ -1,7 +1,6 @@
 package i18n
 
 import (
-	"context"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -64,10 +63,11 @@ func newServer() *gin.Engine {
 
 // makeRequest ...
 func makeRequest(
+	t testing.TB,
 	lng language.Tag,
 	path string,
 ) string {
-	req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, path, nil)
+	req, _ := http.NewRequestWithContext(t.Context(), http.MethodGet, path, nil)
 	req.Header.Add("Accept-Language", lng.String())
 
 	// Perform the request
@@ -240,7 +240,7 @@ func TestI18nEN(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := makeRequest(tt.args.lng, tt.args.path); got != tt.want {
+			if got := makeRequest(t, tt.args.lng, tt.args.path); got != tt.want {
 				t.Errorf("makeRequest() = %v, want %v", got, tt.want)
 			}
 		})
@@ -299,8 +299,8 @@ func newFallbackServer() *gin.Engine {
 	return router
 }
 
-func makeFallbackRequest(lng language.Tag, path string) string {
-	req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, path, nil)
+func makeFallbackRequest(t testing.TB, lng language.Tag, path string) string {
+	req, _ := http.NewRequestWithContext(t.Context(), http.MethodGet, path, nil)
 	req.Header.Add("Accept-Language", lng.String())
 	w := httptest.NewRecorder()
 	r := newFallbackServer()
@@ -382,7 +382,7 @@ func TestFallbackLocale(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := makeFallbackRequest(tt.args.lng, tt.args.path); got != tt.want {
+			if got := makeFallbackRequest(t, tt.args.lng, tt.args.path); got != tt.want {
 				t.Errorf("makeFallbackRequest() = %v, want %v", got, tt.want)
 			}
 		})

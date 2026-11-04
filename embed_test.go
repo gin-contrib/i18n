@@ -1,9 +1,6 @@
-//go:build go1.16
-
 package i18n
 
 import (
-	"context"
 	"embed"
 	"encoding/json"
 	"net/http"
@@ -39,9 +36,9 @@ func newEmbedServer(middleware ...gin.HandlerFunc) *server {
 	return server
 }
 
-func (s *server) request(lng language.Tag, name string) string {
+func (s *server) request(t testing.TB, lng language.Tag, name string) string {
 	path := "/" + name
-	ctx := context.Background()
+	ctx := t.Context()
 	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, path, nil)
 	req.Header.Add("Accept-Language", lng.String())
 
@@ -112,7 +109,7 @@ func TestEmbedLoader(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := s.request(tt.args.lng, tt.args.name)
+			got := s.request(t, tt.args.lng, tt.args.name)
 			if got != tt.want {
 				t.Errorf("makeRequest() = %v, want %v", got, tt.want)
 			}
