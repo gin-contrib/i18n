@@ -388,3 +388,131 @@ func TestFallbackLocale(t *testing.T) {
 		})
 	}
 }
+
+func TestLanguagePreferences(t *testing.T) {
+	router := newServer()
+	router.GET("/language-supported", func(ctx *gin.Context) {
+		ctx.String(http.StatusOK, "%v", HasLang(ctx, ctx.GetHeader("Accept-Language")))
+	})
+
+	tests := []struct {
+		name       string
+		header     string
+		want       string
+		registered string
+	}{
+		{name: "exact language", header: "de", want: wantHallo, registered: "true"},
+		{name: "regional language", header: "de-DE", want: wantHallo, registered: "false"},
+		{name: "case insensitive language", header: "DE", want: wantHallo, registered: "false"},
+		{name: "preference list", header: "fr,en;q=0.9", want: wantBonjour, registered: "false"},
+		{
+			name:       "quality order",
+			header:     "de;q=0.2,fr;q=0.9",
+			want:       wantBonjour,
+			registered: "false",
+		},
+		{
+			name:       "browser preferences",
+			header:     "de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7",
+			want:       wantHallo,
+			registered: "false",
+		},
+		{
+			name:       "unsupported first preference",
+			header:     "ja,fr;q=0.9",
+			want:       wantBonjour,
+			registered: "false",
+		},
+		{name: "zero quality", header: "de;q=0,en;q=0.5", want: wantHello, registered: "false"},
+		{name: "empty header", header: "", want: wantHello, registered: "false"},
+		{name: "unsupported language", header: "ja", want: wantHello, registered: "false"},
+		{name: "invalid language", header: "not_a_language", want: wantHello, registered: "false"},
+		{name: "invalid quality", header: "de;q=invalid", want: wantHello, registered: "false"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			for _, check := range []struct {
+				path string
+				want string
+			}{
+				{path: "/", want: tt.want},
+				{path: "/language-supported", want: tt.registered},
+			} {
+				req := httptest.NewRequestWithContext(t.Context(), http.MethodGet, check.path, nil)
+				req.Header.Set("Accept-Language", tt.header)
+				response := httptest.NewRecorder()
+				router.ServeHTTP(response, req)
+				if response.Code != http.StatusOK {
+					t.Fatalf("%s returned status %d", check.path, response.Code)
+				}
+				if got := response.Body.String(); got != check.want {
+					t.Errorf(
+						"%s with Accept-Language %q = %q, want %q",
+						check.path,
+						tt.header,
+						got,
+						check.want,
+					)
+				}
+			}
+		})
+	}
+}
+
+func TestLanguagePreferencesFallback(t *testing.T) {
+	router := newFallbackServer()
+	tests := []struct {
+		name   string
+		header string
+		path   string
+		want   string
+	}{
+		{name: "regional Chinese", header: "zh-CN", path: "/", want: "你好"},
+		{name: "first fallback", header: "de-DE,de;q=0.9", path: "/age/18", want: "j'ai 18 ans"},
+		{
+			name:   "final fallback",
+			header: "de-DE,de;q=0.9",
+			path:   pathEnglishOnly,
+			want:   wantEnglishOnly,
+		},
+		{
+			name:   "requested language before fallback",
+			header: "en-US,en;q=0.9",
+			path:   "/age/18",
+			want:   "I am 18 years old",
+		},
+		{name: "empty header uses default", header: "", path: "/", want: wantHello},
+		{name: "unsupported language uses default", header: "es", path: "/", want: wantHello},
+		{
+			name:   "invalid language uses default",
+			header: "not_a_language",
+			path:   "/",
+			want:   wantHello,
+		},
+		{name: "invalid quality uses default", header: "de;q=invalid", path: "/", want: wantHello},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			req := httptest.NewRequestWithContext(t.Context(), http.MethodGet, tt.path, nil)
+			req.Header.Set("Accept-Language", tt.header)
+			response := httptest.NewRecorder()
+			router.ServeHTTP(response, req)
+			if response.Code != http.StatusOK {
+				t.Fatalf("%s returned status %d", tt.path, response.Code)
+			}
+			if got := response.Body.String(); got != tt.want {
+				t.Errorf(
+					"%s with Accept-Language %q = %q, want %q",
+					tt.path,
+					tt.header,
+					got,
+					tt.want,
+				)
+			}
+		})
+	}
+}
